@@ -1,0 +1,133 @@
+@media (max-width: 992px){
+    .navbar-center {
+        position: relative;
+        margin-top: 20px;
+        width: 100%;
+    }
+    .nav-auth {
+        visibility: hidden;
+        display: none;
+    }
+}
+
+@media (min-width: 768px){
+    .a-search-collapse {
+        height: 350px;
+    }
+    .register-panel {
+        border-left: 1px solid silver;
+    }
+    .img-profile {
+        padding-top: 248px;
+    }
+}
+
+@media (max-width: 768px){
+    .img-profile {
+        padding-top: 30px;
+    }
+    .tab-content {
+        padding-top: 40px;
+    }
+}
+
+@media (min-width: 992px){
+    .navbar-center {
+        position: relative;
+        width: 70%;
+        left: 10%;
+    }
+    .img-profile {
+        padding-top: 170px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .img-profile {
+        padding-top: 110px;
+    }
+}
+
+@media (min-width: 1400px){
+    .img-profile {
+        padding-top: 50px;
+    }
+}
+
+.container {
+    padding-top: 1rem;
+}
+
+.input-search:focus {
+    border-color: black;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.book-item {
+    position: relative;
+    margin: 4px;
+    width: 188px;
+}
+
+.book-item:hover {
+    border-color: black;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 255, 255, 0.6);
+}
+
+.text-hidden {
+    overflow: hidden;
+    width: 100%;
+    height: 20px;
+}
+
+.offcanvas-item {
+    text-decoration: none;
+    color: white;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    font-size: 16px;
+}
+
+.offcanvas-item.active {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.offcanvas-item:hover {
+    text-decoration: none;
+    color: white;
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.tab-pane.fade {
+    display: none;
+    animation: fade-out 0.5s;
+}
+
+.tab-pane.show {
+    display: block;
+    animation: fade-in 0.5s;
+}
+
+@keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    from {
+      opacity: 1;
+    }
+    to {
+      opacity: 0;
+    }
+}
+
+.btn-filter {
+    position: relative;
+    bottom: -35px;
+}
+
