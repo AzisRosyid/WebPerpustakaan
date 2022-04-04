@@ -25,6 +25,7 @@
                 <p style="font-size: 18px; height: 24px;">Role : <span class="ms-1">{{ $profile['role'] }}</span></p>
                 <p class="pt-1" style="font-size: 18px;">Gender : <span class="ms-1">{{ $profile['gender'] }}</span></p>
                 <p class="mt-2" style="font-size: 18px;">Phone Number : <span class="ms-1">{{ $profile['phoneNumber'] }}</span></p>
+                <p class="mt-2" style="font-size: 18px;">Date Of Birth : <span class="ms-1">{{ substr($profile['dateOfBirth'], 0, 10) }}</span></p>
                 <p class="" style="font-size: 18px;">Address : <span class="ms-1">{{ $profile['address'] }}</span></p>
                 <div class="d-grid gap-2" style="padding-top: 20px;">
                     <button class="btn btn-dark mt-3" type="submit" value="Submit" data-bs-target="#updateProfile" data-bs-toggle="collapse" aria-expanded="false" aria-controls="updateCollapse">Edit Profile</button>

@@ -70,6 +70,6 @@ class AuthController extends Controller
 
     public function logout(){
         session()->forget('token');
-        return route('home');
+        return redirect()->route('home');
     }
 }

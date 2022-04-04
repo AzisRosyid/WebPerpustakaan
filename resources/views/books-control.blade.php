@@ -192,14 +192,14 @@
                 <div class="p-1"></div>
                 <p class="text-hidden" style="font-size: 18px; height: 24px;">Publisher : {{ $st['publisher'] }}</p>
                 <p class="pt-1" style="font-size: 18px;">Category : @if ($st['category']['id'] != null)
-                    <a class="btn btn-success ms-2" @if($fav??false) href="{{ route('favorite') }}?c={{ $st['category']['id'] }}" @else href="{{ route('books') }}?c={{ $st['category']['id'] }}" @endif>{{ $st['category']['name'] }} </a>
+                    <a class="btn btn-success ms-2" @if($fav??false) href="{{ route('favorite') }}?c={{ $st['category']['id'] }}" @else href="{{ route('myBooks') }}?c={{ $st['category']['id'] }}" @endif>{{ $st['category']['name'] }} </a>
                 @endif </p>
                 <div class="row">
                     <div class="col-md-2 pt-1" style="font-size: 18px; width: 85px;">Genre :</div>
                     <div class="col-md-10">
                         <div class="row row-cols-auto">
                         @foreach ($st['genres'] as $id)
-                            <a @if($fav??false) href="{{ route('favorite') }}?g%5B%5D={{ $id['id'] }}" @else href="{{ route('books') }}?g%5B%5D={{ $id['id'] }}" @endif class="btn btn-primary text-white m-1">{{ $id['name'] }}</a>
+                            <a @if($fav??false) href="{{ route('favorite') }}?g%5B%5D={{ $id['id'] }}" @else href="{{ route('myBooks') }}?g%5B%5D={{ $id['id'] }}" @endif class="btn btn-primary text-white m-1">{{ $id['name'] }}</a>
                         @endforeach
                         </div>
                     </div>

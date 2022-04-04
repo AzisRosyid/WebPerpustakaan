@@ -63,9 +63,9 @@ class ProfileController extends Controller
             $url = $url.'&';
         }
 
-        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories');
+        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
-        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres');
+        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
         try { $genres = $getGenres['genres']; } catch(Throwable){ }
 
         $data = [
