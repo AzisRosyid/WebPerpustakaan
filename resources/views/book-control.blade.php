@@ -45,8 +45,8 @@
                             <select class="form-select bg-white" name="category" id="category" aria-label="Select Category">
                               <option value="">--</option>
                               @foreach ($c as $st)
-                              <option value="{{ $st['id'] }}" @if ($book['category']??'' === $st['id'])
-                                selected
+                              <option value="{{ $st['id'] }}" @if ($book['category']['id'] == $st['id'])
+                              selected
                                 @endif>{{ $st['name'] }}</option>
                               @endforeach
                             </select>

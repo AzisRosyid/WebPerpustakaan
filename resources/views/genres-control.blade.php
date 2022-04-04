@@ -17,7 +17,7 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div id="v-pills-tab" role="tablist" class="list-group">
-                                <button class="list-group-item" id="list-genres-tab" data-bs-toggle="pill" data-bs-target="#list-genres" type="button" role="tab" aria-controls="list genres" aria-selected="true">List Genres</button>
+                                <button class="list-group-item active" id="list-genres-tab" data-bs-toggle="pill" data-bs-target="#list-genres" type="button" role="tab" aria-controls="list genres" aria-selected="true">List Genres</button>
                                 <button class="list-group-item" id="sort-by-tab" data-bs-toggle="pill" data-bs-target="#sort-by" type="button" role="tab" aria-controls="sort-by" aria-selected="false">Sort By</button>
                                 <button class="list-group-item" id="order-by-tab" data-bs-toggle="pill" data-bs-target="#order-by" type="button" role="tab" aria-controls="order-by" aria-selected="false">Order By</button>
                             </div>
@@ -67,6 +67,9 @@
                                                     <select class="form-select bg-white"
                                                 name="sb" id="floatingSort" aria-label="Select Sort By">
                                                     <option value="">--</option>
+                                                    <option value="Popularity" @if ($sb === "Popularity")
+                                                    selected
+                                                    @endif>Popularity</option>
                                                     <option value="Id" @if ($sb === "Id")
                                                     selected
                                                     @endif>Id</option>
@@ -111,7 +114,13 @@
     </div>
 </div>
 
+@if(Session::get('genreErrors') != null)
+<div class="alert alert-danger mt-2" style="margin-bottom: 0px;" role="alert">
+    Errors : {{ Session::get('genreErrors') }}
+</div>
+@else
 <div class="mt-3"></div>
+@endif
 
 @if(!empty($genres??[]))
 
@@ -142,7 +151,7 @@
     </div>
 </div>
 
-<div class="modal fade" id="editGenreModal{{ $st['id'] }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Create Genre">
+<div class="modal fade" id="editGenreModal{{ $st['id'] }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Edit Genre Modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-dark">
@@ -150,11 +159,6 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                @if(Session::get('genreErrors') != null)
-                <div class="alert alert-danger" role="alert">
-                    Errors : {{ Session::get('genreErrors') }}
-                </div>
-                @endif
                 <form method="POST" action="{{ route('adminUpdateGenre') }}">
                 @method('put')
                 @csrf

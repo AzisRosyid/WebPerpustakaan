@@ -59,13 +59,19 @@ Route::get('/favorite/book/{id}', [ProfileController::class, 'show'])->name('get
 // Admin
 Route::get('/admin/books', [AdminController::class, 'books'])->name('adminBooks');
 Route::get('/admin/users', [AdminController::class, 'users'])->name('adminUsers');
+
+// Admin Category
 Route::get('/admin/categories', [AdminController::class, 'categories'])->name('adminCategories');
+Route::post('/admin/category', [AdminController::class, 'categoryStore'])->name('adminStoreCategory');
+Route::put('/admin/category', [AdminController::class, 'categoryUpdate'])->name('adminUpdateCategory');
+Route::delete('/admin/category', [AdminController::class, 'categoryDelete'])->name('adminDeleteCategory');
+
 
 // Admin Genre
 Route::get('/admin/genres', [AdminController::class, 'genres'])->name('adminGenres');
-Route::post('/admin/genre/store', [AdminController::class, 'genreStore'])->name('adminStoreGenre');
-Route::put('/admin/genre/', [AdminController::class, 'genreUpdate'])->name('adminUpdateGenre');
-Route::delete('/admin/genre/', [AdminController::class, 'genreDelete'])->name('adminDeleteGenre');
+Route::post('/admin/genre', [AdminController::class, 'genreStore'])->name('adminStoreGenre');
+Route::put('/admin/genre', [AdminController::class, 'genreUpdate'])->name('adminUpdateGenre');
+Route::delete('/admin/genre', [AdminController::class, 'genreDelete'])->name('adminDeleteGenre');
 
 
 
