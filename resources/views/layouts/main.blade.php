@@ -43,15 +43,20 @@
                   </svg>
               </button>
             <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-          <form class="d-flex navbar-form navbar-center me-auto" type="get" @if($fav??false) action="{{ route('favorite') }}" @elseif($my??false) accept="{{ route('myBooks') }}" @else  action="{{ route('books') }}" @endif>
-            <input class="form-control input-search me-2" type="search" @if($fav??false) placeholder="Search Favorite..." @elseif($my??false) placeholder="Search My Books..." @else placeholder="Search Books..." @endif aria-label="Search" name="s" value="{{ $s ?? '' }}" autofocus>
+          <form class="d-flex navbar-form navbar-center me-auto" type="get" @if($fav??false) action="{{ route('favorite') }}" @elseif($my??false) accept="{{ route('myBooks') }}" @elseif($ag??false) accept="{{ route('adminGenres') }}" @else action="{{ route('books') }}" @endif>
+            <input class="form-control input-search me-2" type="search" @if($fav??false) placeholder="Search Favorite..." @elseif($my??false) placeholder="Search My Books..." @elseif($ag??false) placeholder="Search Admin Genres..." @else placeholder="Search Books..." @endif aria-label="Search" name="s" value="{{ $s ?? '' }}" autofocus>
             <button class="btn btn-outline-light" type="submit">Search</button>
           </form>
           @if($my??false)
-            <div class="d-grid gap-2 m-2" style="width: 15%;">
+            <div class="d-grid gap-2 nav-create">
                 <a class="btn btn-success text-white" href="{{ route('createBook') }}" type="submit" value="Submit">Create</a>
             </div>
-        @endif
+          @elseif($ag??false)
+            <div class="d-grid gap-2 nav-create">
+                <a class="btn btn-success text-white" data-bs-toggle="modal" data-bs-target="#createGenreModal" type="submit" value="Submit">Create</a>
+            </div>
+
+          @endif
         </div>
         </div>
       </nav>
@@ -153,6 +158,7 @@
       </div>
 
       <!-- Modal -->
+@if(!$auth??false)
 <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Login">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -218,7 +224,9 @@
       </div>
     </div>
   </div>
+  @endif
 
+  @if($auth??false)
   <div class="modal fade" id="logoutModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Logout" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -236,7 +244,38 @@
       </div>
     </div>
   </div>
+  @endif
 
+@if($ag??false)
+<div class="modal fade" id="createGenreModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Create Genre">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white" id="staticBackdropLabel">Create Genre</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if(Session::get('genreErrors') != null)
+                <div class="alert alert-danger" role="alert">
+                    Errors : {{ Session::get('genreErrors') }}
+                </div>
+                @endif
+                <form method="POST" action="{{ route('adminStoreGenre') }}">
+                @csrf
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="name-genre" name="name" placeholder="Name" maxlength="50" minlength="1" required>
+                    <label for="name-genre">Name</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-success">Store</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 
 <div class="modal fade" id="messagesModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Logout" aria-hidden="true">
     <div class="modal-dialog">

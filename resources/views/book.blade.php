@@ -62,7 +62,7 @@
         Book Description
     </div>
     <div class="card card-body" style="font-size: 16px;">
-        {{ $book['description'] }}
+       <p class="text-justify">{{ $book['description'] }}</p>
     </div>
 </div>
 

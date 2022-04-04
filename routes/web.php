@@ -48,7 +48,7 @@ Route::delete('/mybooks', [BookController::class, 'destroy'])->name('deleteBook'
 
 // Profile
 Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
-Route::post('/profile', [ProfileController::class, 'update'])->name('updateProfile');
+Route::put('/profile', [ProfileController::class, 'update'])->name('updateProfile');
 Route::delete('/profile', [ProfileController::class, 'delete'])->name('deleteProfile');
 
 // Favorite
@@ -60,7 +60,12 @@ Route::get('/favorite/book/{id}', [ProfileController::class, 'show'])->name('get
 Route::get('/admin/books', [AdminController::class, 'books'])->name('adminBooks');
 Route::get('/admin/users', [AdminController::class, 'users'])->name('adminUsers');
 Route::get('/admin/categories', [AdminController::class, 'categories'])->name('adminCategories');
+
+// Admin Genre
 Route::get('/admin/genres', [AdminController::class, 'genres'])->name('adminGenres');
+Route::post('/admin/genre/store', [AdminController::class, 'genreStore'])->name('adminStoreGenre');
+Route::put('/admin/genre/', [AdminController::class, 'genreUpdate'])->name('adminUpdateGenre');
+Route::delete('/admin/genre/', [AdminController::class, 'genreDelete'])->name('adminDeleteGenre');
 
 
 

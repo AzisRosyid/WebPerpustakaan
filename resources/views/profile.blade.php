@@ -54,6 +54,7 @@
             <div class="col-md-12 pt-1">
                     <div class="">
                         <form action="{{ route('updateProfile') }}" method="POST" enctype="multipart/form-data">
+                            @method('put')
                             @csrf
                             <div class="row">
                                 <div class="col-md-8">

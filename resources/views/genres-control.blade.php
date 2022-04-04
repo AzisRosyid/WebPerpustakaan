@@ -13,18 +13,15 @@
               </h1>
               <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body">
-                    <div class="card card-body a-search-collapse">
+                    <div class="card card-body a-search-collapse-v2">
                     <div class="row">
                         <div class="col-md-4">
                             <div id="v-pills-tab" role="tablist" class="list-group">
-                                <button class="list-group-item" id="list-books-tab" data-bs-toggle="pill" data-bs-target="#list-books" type="button" role="tab" aria-controls="list books" aria-selected="true">List Books</button>
-                                <button class="list-group-item" id="category-tab" data-bs-toggle="pill" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="true">Categories</button>
-                                <button class="list-group-item" id="genres-tab" data-bs-toggle="pill" data-bs-target="#genres" type="button" role="tab" aria-controls="genres" aria-selected="false">Genres</button>
+                                <button class="list-group-item" id="list-genres-tab" data-bs-toggle="pill" data-bs-target="#list-genres" type="button" role="tab" aria-controls="list genres" aria-selected="true">List Genres</button>
                                 <button class="list-group-item" id="sort-by-tab" data-bs-toggle="pill" data-bs-target="#sort-by" type="button" role="tab" aria-controls="sort-by" aria-selected="false">Sort By</button>
                                 <button class="list-group-item" id="order-by-tab" data-bs-toggle="pill" data-bs-target="#order-by" type="button" role="tab" aria-controls="order-by" aria-selected="false">Order By</button>
-                                <button class="list-group-item" id="date-tab" data-bs-toggle="pill" data-bs-target="#date" type="button" role="tab" aria-controls="date" aria-selected="false">Date</button>
                             </div>
-                            <form @if($fav??false) action="{{ route('favorite') }}" @else action="{{ route('books') }} @endif">
+                            <form action="{{ route('adminGenres') }}">
                             <div class="d-grid btn-filter">
                                 <input style="display: none;" type="search" aria-label="Search" name="s" value="{{ $s ?? '' }}">
                                 <button class="btn btn-primary" type="submit">Filter</button>
@@ -32,8 +29,8 @@
                         </div>
                         <div class="col-md-8">
                             <div class="tab-content" id="v-pills-tabContent">
-                                <div class="card card-body" style="height: 315px;">
-                                    <div class="tab-pane fade show active" id="list-books" role="tabpanel" aria-labelledby="list-books-tab">
+                                <div class="card card-body" style="height: 200px;">
+                                    <div class="tab-pane fade show active" id="list-genres" role="tabpanel" aria-labelledby="list-genres-tab">
                                         <div class="row row-cols-auto overflow-auto">
                                             <div class="col-12">
                                                 <div class="row">
@@ -63,36 +60,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="category-tab">
-                                        <div class="row row-cols-auto overflow-auto">
-                                                @foreach ($categories as $st)
-                                                <div class="col m-1">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="c" id="category{{ $st['id'] }}" value="{{ $st['id'] }}" @if ($c == $st['id'])
-                                                        checked
-                                                        @endif>
-                                                        <label class="form-check-label" for="category{{ $st['id'] }}">
-                                                        {{ $st['name'] }}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade" id="genres" role="tabpanel" aria-labelledby="genres-tab">
-                                        <div class="row row-cols-auto overflow-auto">
-                                            @foreach ($genres as $st)
-                                                <div class="col m-1">
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" value="{{ $st['id'] }}" id="genres{{ $st['id'] }}" name="g[]" @if (in_array($st['id'], $g ?? []))
-                                                            checked
-                                                        @endif>
-                                                        <label class="form-check-label" for="genres{{ $st['id'] }}">{{ $st['name'] }}</label>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
                                     <div class="tab-pane fade" id="sort-by" role="tabpanel" aria-labelledby="sort-by-tab">
                                         <div class="row row-cols-auto overflow-auto">
                                             <div class="col-12">
@@ -100,23 +67,15 @@
                                                     <select class="form-select bg-white"
                                                 name="sb" id="floatingSort" aria-label="Select Sort By">
                                                     <option value="">--</option>
-                                                    <option value="Popularity" @if ($sb === "Popularity")
+                                                    <option value="Id" @if ($sb === "Id")
                                                     selected
-                                                    @endif>Popularity</option>
-                                                    <option value="Favorite" @if ($sb === "Favorite")
+                                                    @endif>Id</option>
+                                                    <option value="Name" @if ($sb === "Name")
                                                     selected
-                                                    @endif>Favorite</option>
-                                                    <option value="DateUpdated" @if ($sb === "DateUpdated")
-                                                    selected
-                                                    @endif>Date Updated</option>
-                                                    <option value="DateCreated"
-                                                    @if ($sb === "DateCreated")
-                                                    selected
-                                                    @endif>Date Created</option>
+                                                    @endif>Name</option>
                                                 </select>
                                                 <label for="floatingSort">Sort By</label>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
@@ -138,26 +97,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="date" role="tabpanel" aria-labelledby="date-tab">
-                                        <div class="row row-cols-auto overflow-auto">
-                                            <div class="col-12">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <label class="ms-2" for="start">Date Start</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="ms-3" for="end">Date End</label>
-                                                    </div>
-                                                </div>
-                                                <div class="input-group mb-3 m-1">
-                                                    <input type="date" id="start" name="start"  class="form-control bg-white" placeholder="Date Start" aria-label="Date Start">
-                                                    <span class="input-group-text">-</span>
-                                                    <input type="date"
-                                                    id="end" name="end" class="form-control bg-white" placeholder="Date End" aria-label="Date End">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                            </form>
                         </div>
@@ -172,25 +111,93 @@
     </div>
 </div>
 
-@if (!empty($books))
+<div class="mt-3"></div>
 
-<div class="row row-cols-auto align-items-center">
-    @foreach ($books as $st)
-    <div class="">
-        <a @if($fav??false) href="{{ route('getFavorite', ['id' => $st['id']]) }}" @else href="{{ route('getBook', ['id' => $st['id']]) }}" @endif class="text-decoration-none text-black">
-        <div class="card book-item">
-            <img src="http://192.168.21.1:8021/api/Books/ImageBook/{{ $st['image'] }}" class="card-img-top" alt="...">
-            <div class="card-body">
-            <h5 class="card-title text-hidden">{{ $st['title'] }}</h5>
-            <p class="card-text text-hidden">{{ $st['author'] }}</p>
-            </div>
+@if(!empty($genres??[]))
+
+@foreach ($genres as $st)
+<div class="card mt-2" >
+    <div class="row ps-3 g-0">
+      <div class="col-md-2 align-self-center">
+          <div class="row">
+            <p class="align-middle" style="position: relative; bottom: -8px; padding-left: 20px; font-size: 18px;">{{ $loop->index + 1 }}.</p>
+          </div>
+      </div>
+      <div class="col-md-6 align-self-center" >
+        <div class="row row-cols-auto">
+            <p class="align-middle align-self-center col overflow-auto" style="position: relative; margin-left: 10px; bottom: -8px;font-size: 18px; width: 60%;" >{{ $st['name'] }}</p>
+            <p class="align-middle align-self-center col" style="position: relative; margin-left: 10px; bottom: -8px; font-size: 18px; width: 30%" >Tags : {{ $st['tags'] }}</p>
         </div>
-        </a>
+      </div>
+      <div class="col-md-2 align-self-center">
+        <div class="d-grid gap-2 m-2">
+            <a class="btn btn-warning text-white" data-bs-target="#editGenreModal{{ $st['id'] }}" data-bs-toggle="modal" aria-controls="Edit Genre Modal">Edit</a>
+        </div>
+      </div>
+      <div class="col-md-2 align-self-center pe-2">
+        <div class="d-grid gap-2 m-2">
+            <a class="btn btn-danger" data-bs-target="#deleteGenreModal{{$st['id']}}" data-bs-toggle="modal" aria-controls="Delete Genre Modal">Delete</a>
+        </div>
+      </div>
     </div>
-@endforeach
 </div>
 
-<div class="card mt-6">
+<div class="modal fade" id="editGenreModal{{ $st['id'] }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Create Genre">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white" id="staticBackdropLabel">Edit Genre</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if(Session::get('genreErrors') != null)
+                <div class="alert alert-danger" role="alert">
+                    Errors : {{ Session::get('genreErrors') }}
+                </div>
+                @endif
+                <form method="POST" action="{{ route('adminUpdateGenre') }}">
+                @method('put')
+                @csrf
+                <div class="form-floating mb-3">
+                    <input type="text" name="id" value="{{$st['id']}}" style="display: none;" readonly>
+                    <input type="text" class="form-control" id="name-genre" name="name" placeholder="Name" value="{{ $st['name'] }}" minlength="1" maxlength="50" required>
+                    <label for="name-genre">Name</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-warning text-white">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteGenreModal{{$st['id']}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Delete Book Modal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-dark">
+          <h5 class="modal-title text-white" id="staticBackdropLabel">Confirmation?</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size: 15px;" class="m-1">Are you sure delete this genre "{{ $st['name'] }}"?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
+          <form action="{{ route('adminDeleteGenre') }}" method="POST">
+            @method('delete')
+            @csrf
+            <input type="text" name="id" value="{{$st['id']}}" style="display: none;" readonly>
+          <button class="btn btn-danger" type="submit">Delete</button>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+@endforeach
+
+<div class="card mt-3">
     <div class="card-body">
         <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-end">
@@ -214,7 +221,7 @@
 @else
 <div class="card mt-1">
     <div class="card-body" style="font-size: 18px;">
-      Status Code 404 : Books Not Found!
+      Status Code 404 : Genres Not Found!
     </div>
 </div>
 @endif

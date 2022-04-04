@@ -34,7 +34,7 @@
                         <div class="col-md-8">
                             <div class="tab-content" id="v-pills-tabContent">
                                 <div class="card card-body" style="height: 315px;">
-                                    <div class="tab-pane fade" id="list-books" role="tabpanel" aria-labelledby="list-books-tab">
+                                    <div class="tab-pane fade show active" id="list-books" role="tabpanel" aria-labelledby="list-books-tab">
                                         <div class="row row-cols-auto overflow-auto">
                                             <div class="col-12">
                                                 <div class="row">
@@ -64,7 +64,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade show active" id="categories" role="tabpanel" aria-labelledby="category-tab">
+                                    <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="category-tab">
                                         <div class="row row-cols-auto overflow-auto">
                                                 @foreach ($categories as $st)
                                                 <div class="col m-1">
