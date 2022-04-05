@@ -44,7 +44,7 @@ Route::get('/mybook/create', [BookController::class, 'create'])->name('createBoo
 Route::get('/mybook/{id}/edit', [BookController::class, 'edit'])->name('editBook');
 Route::post('/mybook/create', [BookController::class, 'store'])->name('storeBook');
 Route::put('/mybook/{id}/edit', [BookController::class, 'update'])->name('updateBook');
-Route::delete('/mybooks', [BookController::class, 'destroy'])->name('deleteBook');
+Route::delete('/mybook', [BookController::class, 'destroy'])->name('deleteBook');
 
 // Profile
 Route::get('/profile', [ProfileController::class, 'profile'])->name('profile');
@@ -57,8 +57,17 @@ Route::get('/favorite', [ProfileController::class, 'book'])->name('favoriteBook'
 Route::get('/favorite/book/{id}', [ProfileController::class, 'show'])->name('getFavorite');
 
 // Admin
+// Admin Books
 Route::get('/admin/books', [AdminController::class, 'books'])->name('adminBooks');
+
+// Admin Users
 Route::get('/admin/users', [AdminController::class, 'users'])->name('adminUsers');
+Route::get('/user/{id}', [AdminController::class, 'userShow'])->name('adminUserShow');
+Route::get('/admin/user/create', [AdminController::class, 'userCreate'])->name('adminUserCreate');
+Route::post('/admin/user/create', [AdminController::class, 'userStore'])->name('adminUserStore');
+Route::get('/admin/user/{id}/edit', [AdminController::class, 'userEdit'])->name('adminUserEdit');
+Route::put('/admin/user/{id}/edit', [AdminController::class, 'userUpdate'])->name('adminUserUpdate');
+Route::delete('/admin/user', [AdminController::class, 'userDelete'])->name('adminUserDelete');
 
 // Admin Category
 Route::get('/admin/categories', [AdminController::class, 'categories'])->name('adminCategories');

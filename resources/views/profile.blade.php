@@ -31,7 +31,6 @@
                     <button class="btn btn-dark mt-3" type="submit" value="Submit" data-bs-target="#updateProfile" data-bs-toggle="collapse" aria-expanded="false" aria-controls="updateCollapse">Edit Profile</button>
                     <button class="btn btn-danger" type="submit" value="Submit" data-bs-target="#deleteAccountModal" data-bs-toggle="modal" aria-controls="deleteAccountModal">Delete Account</button>
                 </div>
-                </form>
                 <div class="pt-1"></div>
             </div>
         </div>

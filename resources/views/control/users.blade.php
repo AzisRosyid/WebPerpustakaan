@@ -1,7 +1,6 @@
 @extends('layouts.main')
 
 @section('content')
-
 <div class="card mt-6">
     <div class="card-body">
       <div class="row align-items-center">
@@ -18,14 +17,13 @@
                     <div class="row">
                         <div class="col-md-4">
                             <div id="v-pills-tab" role="tablist" class="list-group">
-                                <button class="list-group-item active" id="list-books-tab" data-bs-toggle="pill" data-bs-target="#list-books" type="button" role="tab" aria-controls="list books" aria-selected="true">List Books</button>
-                                <button class="list-group-item" id="category-tab" data-bs-toggle="pill" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="true">Categories</button>
-                                <button class="list-group-item" id="genres-tab" data-bs-toggle="pill" data-bs-target="#genres" type="button" role="tab" aria-controls="genres" aria-selected="false">Genres</button>
+                                <button class="list-group-item active" id="list-users-tab" data-bs-toggle="pill" data-bs-target="#list-users" type="button" role="tab" aria-controls="list users" aria-selected="true">List Users</button>
+                                <button class="list-group-item" id="role-tab" data-bs-toggle="pill" data-bs-target="#role" type="button" role="tab" aria-controls="role" aria-selected="false">Role</button>
+                                <button class="list-group-item" id="gender-tab" data-bs-toggle="pill" data-bs-target="#gender" type="button" role="tab" aria-controls="gender" aria-selected="false">Gender</button>
                                 <button class="list-group-item" id="sort-by-tab" data-bs-toggle="pill" data-bs-target="#sort-by" type="button" role="tab" aria-controls="sort-by" aria-selected="false">Sort By</button>
                                 <button class="list-group-item" id="order-by-tab" data-bs-toggle="pill" data-bs-target="#order-by" type="button" role="tab" aria-controls="order-by" aria-selected="false">Order By</button>
-                                <button class="list-group-item" id="date-tab" data-bs-toggle="pill" data-bs-target="#date" type="button" role="tab" aria-controls="date" aria-selected="false">Date</button>
                             </div>
-                            <form @if($my??false) action="{{ route('myBooks') }}" @elseif($ab??false) action="{{ route('adminBooks') }}" @else action="{{ route('books') }}" @endif>
+                            <form action="{{ route('adminUsers') }}">
                             <div class="d-grid btn-filter">
                                 <input style="display: none;" type="search" aria-label="Search" name="s" value="{{ $s ?? '' }}">
                                 <button class="btn btn-primary" type="submit">Filter</button>
@@ -33,8 +31,8 @@
                         </div>
                         <div class="col-md-8">
                             <div class="tab-content" id="v-pills-tabContent">
-                                <div class="card card-body" style="height: 315px;">
-                                    <div class="tab-pane fade show active" id="list-books" role="tabpanel" aria-labelledby="list-books-tab">
+                                <div class="card card-body" style="height: 275px;">
+                                    <div class="tab-pane fade show active" id="list-users" role="tabpanel" aria-labelledby="list-users-tab">
                                         <div class="row row-cols-auto overflow-auto">
                                             <div class="col-12">
                                                 <div class="row">
@@ -64,34 +62,40 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="category-tab">
+                                    <div class="tab-pane fade" id="role" role="tabpanel" aria-labelledby="role-tab">
                                         <div class="row row-cols-auto overflow-auto">
-                                                @foreach ($categories as $st)
-                                                <div class="col m-1">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="c" id="category{{ $st['id'] }}" value="{{ $st['id'] }}" @if ($c == $st['id'])
-                                                        checked
-                                                        @endif>
-                                                        <label class="form-check-label" for="category{{ $st['id'] }}">
-                                                        {{ $st['name'] }}
-                                                        </label>
-                                                    </div>
+                                            <div class="col-12">
+                                                <div class="form-floating m-1">
+                                                    <select class="form-select bg-white" name="r" id="floatingRole" aria-label="Select Role">
+                                                        <option value="">--</option>
+                                                        <option value="Admin" @if ($r === "Admin")
+                                                        selected
+                                                        @endif>Admin</option>
+                                                        <option value="User" @if ($r === "User")
+                                                        selected
+                                                        @endif>User</option>
+                                                    </select>
+                                                    <label for="floatingRole">Role</label>
                                                 </div>
-                                            @endforeach
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="genres" role="tabpanel" aria-labelledby="genres-tab">
+                                    <div class="tab-pane fade" id="gender" role="tabpanel" aria-labelledby="gender-tab">
                                         <div class="row row-cols-auto overflow-auto">
-                                            @foreach ($genres as $st)
-                                                <div class="col m-1">
-                                                    <div class="form-check">
-                                                        <input type="checkbox" class="form-check-input" value="{{ $st['id'] }}" id="genres{{ $st['id'] }}" name="g[]" @if (in_array($st['id'], $g ?? []))
-                                                            checked
-                                                        @endif>
-                                                        <label class="form-check-label" for="genres{{ $st['id'] }}">{{ $st['name'] }}</label>
-                                                    </div>
+                                            <div class="col-12">
+                                                <div class="form-floating m-1">
+                                                    <select class="form-select bg-white" name="g" id="floatingGender" aria-label="Select Gender">
+                                                        <option value="">--</option>
+                                                        <option value="Male" @if ($g === "Male")
+                                                        selected
+                                                        @endif>Male</option>
+                                                        <option value="Female" @if ($g === "Female")
+                                                        selected
+                                                        @endif>Female</option>
+                                                    </select>
+                                                    <label for="floatingGender">Gender</label>
                                                 </div>
-                                            @endforeach
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="sort-by" role="tabpanel" aria-labelledby="sort-by-tab">
@@ -101,23 +105,46 @@
                                                     <select class="form-select bg-white"
                                                 name="sb" id="floatingSort" aria-label="Select Sort By">
                                                     <option value="">--</option>
-                                                    <option value="Popularity" @if ($sb === "Popularity")
+                                                    <option value="Id" @if ($sb === "Id")
                                                     selected
-                                                    @endif>Popularity</option>
-                                                    <option value="Favorite" @if ($sb === "Favorite")
+                                                    @endif>Id</option>
+                                                    <option value="Name" @if ($sb === "Name")
                                                     selected
-                                                    @endif>Favorite</option>
-                                                    <option value="DateUpdated" @if ($sb === "DateUpdated")
+                                                    @endif>Name</option>
+                                                    <option value="Email" @if ($sb === "Email")
                                                     selected
-                                                    @endif>Date Updated</option>
+                                                    @endif>Email</option>
+                                                    <option value="Role"
+                                                    @if ($sb === "Role")
+                                                    selected
+                                                    @endif>Role</option>
+                                                    <option value="Gender"
+                                                    @if ($sb === "Gender")
+                                                    selected
+                                                    @endif>Gender</option>
+                                                    <option value="DateOfBirth"
+                                                    @if ($sb === "DateOfBirth")
+                                                    selected
+                                                    @endif>Date Of Birth</option>
+                                                    <option value="PhoneNumber"
+                                                    @if ($sb === "PhoneNumber")
+                                                    selected
+                                                    @endif>PhoneNumber</option>
+                                                    <option value="Address"
+                                                    @if ($sb === "Address")
+                                                    selected
+                                                    @endif>Address</option>
                                                     <option value="DateCreated"
                                                     @if ($sb === "DateCreated")
                                                     selected
                                                     @endif>Date Created</option>
+                                                    <option value="DateUpdated"
+                                                    @if ($sb === "DateUpdated")
+                                                    selected
+                                                    @endif>Date Updated</option>
                                                 </select>
                                                 <label for="floatingSort">Sort By</label>
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
@@ -139,26 +166,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="date" role="tabpanel" aria-labelledby="date-tab">
-                                        <div class="row row-cols-auto overflow-auto">
-                                            <div class="col-12">
-                                                <div class="row">
-                                                    <div class="col-6">
-                                                        <label class="ms-2" for="start">Date Start</label>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label class="ms-3" for="end">Date End</label>
-                                                    </div>
-                                                </div>
-                                                <div class="input-group mb-3 m-1">
-                                                    <input type="date" id="start" name="start"  class="form-control bg-white" placeholder="Date Start" aria-label="Date Start">
-                                                    <span class="input-group-text">-</span>
-                                                    <input type="date"
-                                                    id="end" name="end" class="form-control bg-white" placeholder="Date End" aria-label="Date End">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                            </form>
                         </div>
@@ -173,41 +180,34 @@
     </div>
 </div>
 
+@if(Session::get('userErrors') != null)
+<div class="alert alert-danger mt-2" style="margin-bottom: 0px;" role="alert">
+    Errors : {{ Session::get('userErrors') }}
+</div>
+@else
 <div class="mt-3"></div>
+@endif
 
-@if(!empty($books??[]))
-@foreach ($books as $st)
+@if(!empty($users??[]))
+@foreach ($users as $st)
 <div class="card mt-2" >
     <div class="row g-0">
       <div class="col-md-2 align-self-center">
           <a data-bs-toggle="modal" data-bs-target="#imageModal{{$st['id']}}">
-        <img src="http://192.168.21.1:8021/api/Books/ImageBook/{{ $st['image'] }}" id="imageBook{{ $st['id'] }}" class="img-fluid rounded-start" alt="Image Profile">
+        <img src="http://192.168.21.1:8021/api/Users/UserImage/{{ $st['image'] }}" id="imageUser{{ $st['id'] }}" class="img-fluid rounded-start" alt="Image Profile">
         </a>
       </div>
       <div class="col-md-8 align-self-center" >
-        <div class="row overflow-auto m-1" style="width: 95%; display: none;" id="contentBook{{ $st['id'] }}">
+        <div class="row overflow-auto m-1" style="width: 95%; display: none;" id="contentUser{{ $st['id'] }}">
             <div class="card-body" >
-                <p class="text-hidden" style="font-size: 24px; height: 30px;">Title : {{ $st['title'] }}</p>
-                <p class="text-hidden" style="font-size: 18px; height: 24px;">Author : {{ $st['author'] }}</p>
-                <div class="p-1"></div>
-                <p class="text-hidden" style="font-size: 18px; height: 24px;">Publisher : {{ $st['publisher'] }}</p>
-                <p class="pt-1" style="font-size: 18px;">Category : @if ($st['category']['id'] != null)
-                    <a class="btn btn-success ms-2" @if($fav??false) href="{{ route('favorite') }}?c={{ $st['category']['id'] }}" @else href="{{ route('myBooks') }}?c={{ $st['category']['id'] }}" @endif>{{ $st['category']['name'] }} </a>
-                @endif </p>
-                <div class="row">
-                    <div class="col-md-2 pt-1" style="font-size: 18px; width: 85px;">Genre :</div>
-                    <div class="col-md-10">
-                        <div class="row row-cols-auto">
-                        @foreach ($st['genres'] as $id)
-                            <a @if($fav??false) href="{{ route('favorite') }}?g%5B%5D={{ $id['id'] }}" @else href="{{ route('myBooks') }}?g%5B%5D={{ $id['id'] }}" @endif class="btn btn-primary text-white m-1">{{ $id['name'] }}</a>
-                        @endforeach
-                        </div>
-                    </div>
-                </div>
-                <p class="mt-2" style="font-size: 18px;">Pages : <span class="ms-1">{{ $st['page'] }}</span></p>
-                <p class="" style="font-size: 18px;">Views : <span class="ms-1">{{ $st['viewCount'] }}</span></p>
-                <p class="" style="font-size: 18px;">Description : </p>
-                <p style="font-size: 16px; margin-top: -8px;">{{ $st['description'] }}</p>
+                <p class="" style="font-size: 24px;">Name : <span class="ms-1">{{ $st['name'] }}</span></p>
+                <p class="" style="font-size: 18px;">Email : <span class="ms-1">{{ $st['email'] }}</span></p>
+                <p class="" style="font-size: 18px;">Role : <span class="ms-1">{{ $st['role'] }}</span></p>
+                <p class="" style="font-size: 18px;">Gender : <span class="ms-1">{{ $st['gender'] }}</span></p>
+                <p class="" style="font-size: 18px;">Phone Number : <span class="ms-1">{{ $st['phoneNumber'] }}</span></p>
+                <p class="" style="font-size: 18px;">Date Of Birth : <span class="ms-1">{{ substr($st['dateOfBirth'], 0, 10) }}</span></p>
+                <p class="" style="font-size: 18px;">Address : </p>
+                <p style="font-size: 16px; margin-top: -8px;">{{ $st['address'] }}</p>
                 <div class="row">
                     <div class="col-md-6">
                         <p class="" style="font-size: 18px;">Date Created : <span class="ms-1">{{ substr($st['dateCreated'], 0, 10) }}</span></p>
@@ -221,9 +221,9 @@
       </div>
       <div class="col-md-2 align-self-center pe-2">
         <div class="d-grid gap-2 m-2">
-            <a class="btn btn-primary text-white" href="{{ route('getBook', ['id' => $st['id']]) }}" target="_blank" type="submit" value="Submit">Show</a>
-            <a class="btn btn-warning text-white" href="{{ route('editBook', ['id' => $st['id']]) }}" type="submit" value="Submit">Edit</a>
-            <a class="btn btn-danger" data-bs-target="#deleteBookModal{{$st['id']}}" data-bs-toggle="modal" aria-controls="Delete Book Modal">Delete</a>
+            <a class="btn btn-primary text-white" href="{{ route('adminUserShow', ['id' => $st['id']]) }}" target="_blank" type="submit" value="Submit">Show</a>
+            <a class="btn btn-warning text-white" href="{{ route('adminUserEdit', ['id' => $st['id']]) }}" type="submit" value="Submit">Edit</a>
+            <a class="btn btn-danger" data-bs-target="#deleteUserModal{{$st['id']}}" data-bs-toggle="modal" aria-controls="Delete User Modal">Delete</a>
         </div>
       </div>
     </div>
@@ -233,12 +233,12 @@
 <div class="modal fade" id="imageModal{{$st['id']}}" tabindex="-1" aria-labelledby="imageModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content overflow-auto">
-        <img src="http://192.168.21.1:8021/api/Books/ImageBook/{{ $st['image'] }}" class="rounded" id="imgProfile" alt="Book Image">
+        <img src="http://192.168.21.1:8021/api/Users/UserImage/{{ $st['image'] }}" class="rounded" id="imgProfile" alt="Book Image">
       </div>
     </div>
 </div>
 
-<div class="modal fade" id="deleteBookModal{{$st['id']}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Delete Book Modal" aria-hidden="true">
+<div class="modal fade" id="deleteUserModal{{$st['id']}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Delete User Modal" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header bg-dark">
@@ -246,11 +246,11 @@
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <p style="font-size: 15px;" class="m-1">Are you sure delete this book "{{ $st['title'] }}"?</p>
+            <p style="font-size: 15px;" class="m-1">Are you sure delete this user "{{ $st['name'] }}"?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
-          <form action="{{ route('deleteBook') }}" method="POST">
+          <form action="{{ route('adminUserDelete') }}" method="POST">
             @method('delete')
             @csrf
             <input type="text" name="id" value="{{$st['id']}}" style="display: none;" readonly>
@@ -289,9 +289,8 @@
 @else
 <div class="card mt-1">
     <div class="card-body" style="font-size: 18px;">
-      Status Code 404 : Books Not Found!
+      Status Code 404 : Users Not Found!
     </div>
 </div>
 @endif
-
 @endsection

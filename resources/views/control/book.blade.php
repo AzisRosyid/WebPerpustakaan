@@ -45,9 +45,7 @@
                             <select class="form-select bg-white" name="category" id="category" aria-label="Select Category">
                               <option value="">--</option>
                               @foreach ($c as $st)
-                              <option value="{{ $st['id'] }}" @if ($book['category']['id'] == $st['id'])
-                              selected
-                                @endif>{{ $st['name'] }}</option>
+                              <option value="{{ $st['id'] }}" @if ( in_array($st['id'], $category??[])) selected @endif>{{ $st['name'] }}</option>
                               @endforeach
                             </select>
                             <label for="category">Category</label>
@@ -92,24 +90,13 @@
                     </div>
                     <div class="col-md-4 register-panel">
                         <div class="d-grid gap-2 m-2">
+                            <input type="text" name="url" style="display: none;" value="{{ $url??'' }}" readonly>
                             @if($cr??false)
                             <button class="btn btn-success" type="submit" value="Submit">Store</button>
                             @elseif($ed??false)
                             <button class="btn btn-warning text-white" type="submit" value="Submit">Update</button>
                             @endif
-                            @if($cr??false)
-                                @if(redirect()->back()->getTargetUrl() == route('createBook') || redirect()->back()->getTargetUrl() == route('storeBook'))
-                                <a class="btn btn-danger" href="{{ route('myBooks') }}">Cancel</a>
-                                @else
-                                <a class="btn btn-danger" href="{{ redirect()->back()->getTargetUrl() }}">Cancel</a>
-                                @endif
-                            @elseif($ed??false)
-                                @if(redirect()->back()->getTargetUrl() == route('editBook', ['id' => $book['id']]) || redirect()->back()->getTargetUrl() == route('updateBook', ['id' => $book['id']]))
-                                <a class="btn btn-danger" href="{{ route('myBooks') }}">Cancel</a>
-                                @else
-                                <a class="btn btn-danger" href="{{ redirect()->back()->getTargetUrl() }}">Cancel</a>
-                                @endif
-                            @endif
+                            <a class="btn btn-danger" href="{{ $url??'' }}">Cancel</a>
                         </div>
                         <div class="text-center img-profile">
                             <label class="form-label" for="imgProfile">Image Book</label>

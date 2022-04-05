@@ -11,12 +11,23 @@ window.onload = () => {
             $('#contentBook' + st).css('display', 'block');
         });
     }
+    if(users != []){
+        users.forEach(st => {
+            $('#contentUser' + st).css('height', $('#imageUser' + st).height() - 20);
+            $('#contentUser' + st).css('display', 'block');
+        });
+    }
 }
 
 window.onresize = () => {
     if(books != []){
         books.forEach(st => {
             $('#contentBook' + st).css('height', $('#imageBook' + st).height() - 20);
+        });
+    }
+    if(users != []){
+        users.forEach(st => {
+            $('#contentUser' + st).css('height', $('#imageUser' + st).height() - 20);
         });
     }
 }
