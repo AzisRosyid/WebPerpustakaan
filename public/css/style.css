@@ -82,6 +82,15 @@
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
+.user-select {
+    border: 1px solid black;
+}
+
+.user-select:hover {
+    box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+
 .text-hidden {
     overflow: hidden;
     width: 100%;

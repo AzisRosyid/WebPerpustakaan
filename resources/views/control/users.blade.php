@@ -221,8 +221,8 @@
       </div>
       <div class="col-md-2 align-self-center pe-2">
         <div class="d-grid gap-2 m-2">
-            <a class="btn btn-primary text-white" href="{{ route('adminUserShow', ['id' => $st['id']]) }}" target="_blank" type="submit" value="Submit">Show</a>
-            <a class="btn btn-warning text-white" href="{{ route('adminUserEdit', ['id' => $st['id']]) }}" type="submit" value="Submit">Edit</a>
+            <a class="btn btn-primary text-white" href="{{ route('adminShowUser', ['id' => $st['id']]) }}" target="_blank" type="submit" value="Submit">Show</a>
+            <a class="btn btn-warning text-white" href="{{ route('adminEditUser', ['id' => $st['id']]) }}" type="submit" value="Submit">Edit</a>
             <a class="btn btn-danger" data-bs-target="#deleteUserModal{{$st['id']}}" data-bs-toggle="modal" aria-controls="Delete User Modal">Delete</a>
         </div>
       </div>
@@ -250,7 +250,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
-          <form action="{{ route('adminUserDelete') }}" method="POST">
+          <form action="{{ route('adminDeleteUser') }}" method="POST">
             @method('delete')
             @csrf
             <input type="text" name="id" value="{{$st['id']}}" style="display: none;" readonly>

@@ -25,7 +25,7 @@
                                 <button class="list-group-item" id="order-by-tab" data-bs-toggle="pill" data-bs-target="#order-by" type="button" role="tab" aria-controls="order-by" aria-selected="false">Order By</button>
                                 <button class="list-group-item" id="date-tab" data-bs-toggle="pill" data-bs-target="#date" type="button" role="tab" aria-controls="date" aria-selected="false">Date</button>
                             </div>
-                            <form @if($my??false) action="{{ route('myBooks') }}" @elseif($ab??false) action="{{ route('adminBooks') }}" @else action="{{ route('books') }}" @endif>
+                            <form @if($my??false) action="{{ route('myBooks') }}" @elseif($ab??false) action="{{ route('adminBooks') }}" @endif>
                             <div class="d-grid btn-filter">
                                 <input style="display: none;" type="search" aria-label="Search" name="s" value="{{ $s ?? '' }}">
                                 <button class="btn btn-primary" type="submit">Filter</button>
@@ -196,6 +196,9 @@
                 <p class="text-hidden" style="font-size: 24px; height: 30px;">Title : {{ $st['title'] }}</p>
                 <p class="text-hidden" style="font-size: 18px; height: 24px;">Author : {{ $st['author'] }}</p>
                 <div class="p-1"></div>
+                @if($ab??false)
+                <p class="text-hidden" style="font-size: 18px; height: 24px;">User : {{ $st['user']['name'] }}</p>
+                @endif
                 <p class="text-hidden" style="font-size: 18px; height: 24px;">Publisher : {{ $st['publisher'] }}</p>
                 <p class="pt-1" style="font-size: 18px;">Category : @if ($st['category']['id'] != null)
                     <a class="btn btn-success ms-2" @if($fav??false) href="{{ route('favorite') }}?c={{ $st['category']['id'] }}" @else href="{{ route('myBooks') }}?c={{ $st['category']['id'] }}" @endif>{{ $st['category']['name'] }} </a>
@@ -228,7 +231,7 @@
       <div class="col-md-2 align-self-center pe-2">
         <div class="d-grid gap-2 m-2">
             <a class="btn btn-primary text-white" href="{{ route('getBook', ['id' => $st['id']]) }}" target="_blank" type="submit" value="Submit">Show</a>
-            <a class="btn btn-warning text-white" href="{{ route('editBook', ['id' => $st['id']]) }}" type="submit" value="Submit">Edit</a>
+            <a class="btn btn-warning text-white" @if($ab??false) href="{{ route('adminEditBook', ['id' => $st['id']]) }}" @elseif($my??false) href="{{ route('editBook', ['id' => $st['id']]) }}" @endif type="submit" value="Submit">Edit</a>
             <a class="btn btn-danger" data-bs-target="#deleteBookModal{{$st['id']}}" data-bs-toggle="modal" aria-controls="Delete Book Modal">Delete</a>
         </div>
       </div>
@@ -256,7 +259,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Cancel</button>
-          <form action="{{ route('deleteBook') }}" method="POST">
+          <form @if($ab??false) action="{{ route('adminDeleteBook') }}" @elseif($my??false) action="{{ route('deleteBook') }}" @endif method="POST">
             @method('delete')
             @csrf
             <input type="text" name="id" value="{{$st['id']}}" style="display: none;" readonly>

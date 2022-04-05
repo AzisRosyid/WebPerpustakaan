@@ -212,11 +212,21 @@
     </div>
 </div>
 @else
+
+@if($fav??false)
+<div class="card mt-1">
+    <div class="card-body" style="font-size: 18px;">
+      Status Code 404 : Favorite Not Found!
+    </div>
+</div>
+@else
 <div class="card mt-1">
     <div class="card-body" style="font-size: 18px;">
       Status Code 404 : Books Not Found!
     </div>
 </div>
+@endif
+
 @endif
 
 @endsection

@@ -18,7 +18,7 @@
     <div class="col-md-12 pt-1">
     @endif
         <div class="card card-body">
-            <form @if($cr??false) action="{{ route('adminUserStore') }}" @elseif($ed??false) action="{{ route('adminUserUpdate', ['id' => $user['id']]) }}" @endif method="POST" enctype="multipart/form-data">
+            <form @if($cr??false) action="{{ route('adminStoreUser') }}" @elseif($ed??false) action="{{ route('adminUpdateUser', ['id' => $user['id']]) }}" @endif method="POST" enctype="multipart/form-data">
                 @if($ed??false) @method('put') @endif
                 @csrf
                 <div class="row">

@@ -18,7 +18,7 @@
     <div class="col-md-12 pt-1">
     @endif
         <div class="card card-body">
-            <form @if($cr??false) action="{{ route('storeBook') }}" @elseif($ed??false) action="{{ route('updateBook', ['id' => $book['id']??'']) }}" @endif  method="POST" enctype="multipart/form-data">
+            <form @if($my??false) @if($cr??false) action="{{ route('storeBook') }}" @elseif($ed??false) action="{{ route('updateBook', ['id' => $book['id']??'']) }}" @endif @elseif($ab??false) @if($cr??false) action="{{ route('adminStoreBook') }}" @elseif($ed??false) action="{{ route('adminUpdateBook', ['id' => $book['id']??'']) }}" @endif @endif method="POST" enctype="multipart/form-data">
                 @if($ed??false)
                 @method('put')
                 @endif
@@ -33,6 +33,16 @@
                             <input type="text" name="author" class="form-control bg-white" id="author" placeholder="Author" value="{{ $book['author']??'' }}" required>
                             <label for="author">Author</label>
                         </div>
+                        @if($ab??false)
+                        <div class="m-2">
+                            <div class="input-group">
+                                <button class="btn btn-dark text-white" id="btn-user" type="button" data-bs-toggle="modal" data-bs-target="#userModal">Select User</button>
+                                <input type="text" style="display: none;" id="user" name="user" readonly>
+                                <label class="card card-body user-select" id="user-label" for="btn-user">Click to Select User</label>
+                            </div>
+                        </div>
+
+                        @endif
                         <div class="form-floating m-2">
                             <input type="text" name="publisher" class="form-control bg-white" id="publisher" placeholder="Publisher" value="{{ $book['publisher']??'' }}">
                             <label for="publisher">Publisher</label>
@@ -116,6 +126,14 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content overflow-auto">
         <img @if($cr??false) src="{{ asset('img/nopick.png') }}" @elseif($ed??false) src="http://192.168.21.1:8021/api/Books/ImageBook/{{ $book['image'] }}" @endif  class="rounded" id="imgProfileModal" alt="Image Profile">
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+
       </div>
     </div>
 </div>

@@ -195,7 +195,7 @@ class BookController extends Controller
             try { $categories = $getCategories['categories']; } catch(Throwable) { }
             $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
             try { $genres = $getGenres['genres']; } catch(Throwable){ }
-            return view('control.book', ['bookErrors' => $response['errors'], 'profile' => $profile, 'auth' => true, 'cr' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'url' => $request->url]);
+            return view('control.book', ['bookErrors' => $response['errors'], 'profile' => $profile, 'auth' => true, 'cr' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'url' => $request->url, 'my' => true]);
         }
     }
 
@@ -322,7 +322,7 @@ class BookController extends Controller
             try { $categories = $getCategories['categories']; } catch(Throwable) { }
             $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
             try { $genres = $getGenres['genres']; } catch(Throwable){ }
-            return view('control.book', ['bookErrors' => 'helo', 'profile' => $profile, 'auth' => true, 'ed' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'url' => $request->url]);
+            return view('control.book', ['bookErrors' => 'helo', 'profile' => $profile, 'auth' => true, 'ed' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'url' => $request->url, 'my' => true]);
         }
     }
 

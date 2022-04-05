@@ -23,7 +23,7 @@ use function PHPUnit\Framework\returnValue;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('home');
 });
 
 // Home
@@ -59,15 +59,20 @@ Route::get('/favorite/book/{id}', [ProfileController::class, 'show'])->name('get
 // Admin
 // Admin Books
 Route::get('/admin/books', [AdminController::class, 'books'])->name('adminBooks');
+Route::get('/admin/book/create', [AdminController::class, 'bookCreate'])->name('adminCreateBook');
+Route::post('/admin/book/create', [AdminController::class, 'bookStore'])->name('adminStoreBook');
+Route::get('/admin/book/{id}/edit', [AdminController::class, 'bookEdit'])->name('adminEditBook');
+Route::put('/admin/book/{id}/edit', [AdminController::class, 'bookUpdate'])->name('adminUpdateBook');
+Route::delete('/admin/book', [AdminController::class, 'bookDelete'])->name('adminDeleteBook');
 
 // Admin Users
 Route::get('/admin/users', [AdminController::class, 'users'])->name('adminUsers');
-Route::get('/user/{id}', [AdminController::class, 'userShow'])->name('adminUserShow');
-Route::get('/admin/user/create', [AdminController::class, 'userCreate'])->name('adminUserCreate');
-Route::post('/admin/user/create', [AdminController::class, 'userStore'])->name('adminUserStore');
-Route::get('/admin/user/{id}/edit', [AdminController::class, 'userEdit'])->name('adminUserEdit');
-Route::put('/admin/user/{id}/edit', [AdminController::class, 'userUpdate'])->name('adminUserUpdate');
-Route::delete('/admin/user', [AdminController::class, 'userDelete'])->name('adminUserDelete');
+Route::get('/user/{id}', [AdminController::class, 'userShow'])->name('adminShowUser');
+Route::get('/admin/user/create', [AdminController::class, 'userCreate'])->name('adminCreateUser');
+Route::post('/admin/user/create', [AdminController::class, 'userStore'])->name('adminStoreUser');
+Route::get('/admin/user/{id}/edit', [AdminController::class, 'userEdit'])->name('adminEditUser');
+Route::put('/admin/user/{id}/edit', [AdminController::class, 'userUpdate'])->name('adminUpdateUser');
+Route::delete('/admin/user', [AdminController::class, 'userDelete'])->name('adminDeleteUser');
 
 // Admin Category
 Route::get('/admin/categories', [AdminController::class, 'categories'])->name('adminCategories');
