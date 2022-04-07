@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\Method;
 use Throwable;
 
 class HomeController extends Controller
@@ -16,11 +17,8 @@ class HomeController extends Controller
     public function index()
     {
         $auth = false;
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (Method::auth($profile)) {
             $auth = true;
             $profile = $profile['user'];
         }
@@ -30,8 +28,7 @@ class HomeController extends Controller
 
     public function register(){
 
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
         if ($profile->successful()){
             return back();
         }

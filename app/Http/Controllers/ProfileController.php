@@ -4,47 +4,37 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\Method;
 use Throwable;
 
 class ProfileController extends Controller
 {
     public function profile(){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (Method::auth($profile)){
             $profile = $profile['user'];
             return view('profile', ['profile' => $profile, 'auth' => true]);
-        } else {
-            return redirect()->route('home');
         }
+        return redirect()->route('home');
     }
 
     public function favorite(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile)){
             return redirect()->route('home');
         }
 
-        Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles/Favorite/'.$request->id.'/true');
+        Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles/Favorite/'.$request->id.'/true');
 
         return back();
     }
 
     public function book(Request $request){
         $auth = false;
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $auth = true;
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (Method::auth($profile)){
             $profile = $profile['user'];
+            $auth = true;
         } else {
             return redirect()->route('home');
         }
@@ -63,9 +53,9 @@ class ProfileController extends Controller
             $url = $url.'&';
         }
 
-        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+        $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
-        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+        $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
         try { $genres = $getGenres['genres']; } catch(Throwable){ }
 
         $data = [
@@ -84,7 +74,7 @@ class ProfileController extends Controller
         ];
 
         $getBooks = Http::asForm()->
-        post('http://192.168.21.1:8021/api/Books/GetBooks', $data);
+        post(Method::$baseUrl.'Books/GetBooks', $data);
         try { $total_page = $getBooks['totalPages']; } catch(Throwable) { }
         try { $books = $getBooks['books']; } catch(Throwable) { }
 
@@ -94,22 +84,19 @@ class ProfileController extends Controller
 
     public function show($id){
         $auth = false; $favorite = false;
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $getFavorite = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles/Favorite/'.$id.'/false');
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (Method::auth($profile)){
+            $getFavorite = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles/Favorite/'.$id.'/false');
             if($getFavorite->successful()){
                 $favorite = $getFavorite['favorite'];
             }
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $auth = true;
             $profile = $profile['user'];
+            $auth = true;
         } else {
             return redirect()->route('home');
         }
 
-        $getBook = Http::get('http://192.168.21.1:8021/api/Books/'.$id);
+        $getBook = Http::get(Method::$baseUrl.'Books/'.$id);
 
         if($getBook->successful()){
             return view('book', ['book' => $getBook['book'], 'auth' => $auth, 'profile' => $profile, 'favorite' => $favorite, 'fav' => true]);
@@ -119,11 +106,9 @@ class ProfileController extends Controller
     }
 
     public function update(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (Method::auth($profile)){
+            $profile = $profile['user'];
         } else {
             return redirect()->route('home');
         }
@@ -148,9 +133,9 @@ class ProfileController extends Controller
             $file_name = $request->file('image')->getClientOriginalName();
             $response = Http::withToken(session('token'))->attach(
                 'image', file_get_contents($request->file('image')), $file_name
-            )->put('http://192.168.21.1:8021/api/Profiles', $data);
+            )->put(Method::$baseUrl.'Profiles', $data);
         } else {
-            $response = Http::withToken(session('token'))->asMultipart()->put('http://192.168.21.1:8021/api/Profiles', $data);
+            $response = Http::withToken(session('token'))->asMultipart()->put(Method::$baseUrl.'Profiles', $data);
         }
 
         if($response->successful()){
@@ -161,16 +146,14 @@ class ProfileController extends Controller
     }
 
     public function delete(){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (Method::auth($profile)){
+            $profile = $profile['user'];
         } else {
             return redirect()->route('home');
         }
 
-        $profile = Http::withToken(session('token'))->delete('http://192.168.21.1:8021/api/Profiles');
+        $profile = Http::withToken(session('token'))->delete(Method::$baseUrl.'Profiles');
 
         if ($profile->successful()){
             session()->forget('token');

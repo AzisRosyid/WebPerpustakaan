@@ -4,24 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\Method;
 use Throwable;
 
 class AdminController extends Controller
 {
     // Admin Books
     public function books(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $books = []; $categories = []; $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 0; $url = $request->fullUrl(); $category = $request['c']; $genre = $request['g']; $pick = $request['pc'];
 
@@ -37,9 +31,9 @@ class AdminController extends Controller
             $url = $url.'&';
         }
 
-        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+        $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
-        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+        $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
         try { $genres = $getGenres['genres']; } catch(Throwable){ }
 
         $data = [
@@ -56,7 +50,7 @@ class AdminController extends Controller
         ];
 
         $getBooks = Http::asForm()->
-        post('http://192.168.21.1:8021/api/Books/GetBooks', $data);
+        post(Method::$baseUrl.'Books/GetBooks', $data);
         try { $total_page = $getBooks['totalPages']; } catch(Throwable) { }
         try { $books = $getBooks['books']; } catch(Throwable) { }
 
@@ -66,24 +60,17 @@ class AdminController extends Controller
     }
 
     public function bookCreate(){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $categories = []; $genres = []; $users = []; $url = back()->getTargetUrl();
 
-        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+        $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
-        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+        $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
         try { $genres = $getGenres['genres']; } catch(Throwable){ }
 
         $context = [
@@ -94,18 +81,11 @@ class AdminController extends Controller
     }
 
     public function bookStore(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $data = [
             'title' => $request->title,
@@ -120,45 +100,38 @@ class AdminController extends Controller
         if($request->hasFile('image')) {
             $response = Http::withToken(session('token'))->attach(
                 'image', file_get_contents($request->file('image')), $request->file('image')->getClientOriginalName()
-            )->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->post('http://192.168.21.1:8021/api/Books', $data);
+            )->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->post(Method::$baseUrl.'Books', $data);
         } else {
-            $response = Http::withToken(session('token'))->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->post('http://192.168.21.1:8021/api/Books', $data);
+            $response = Http::withToken(session('token'))->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->post(Method::$baseUrl.'Books', $data);
         }
 
         if($response->successful()){
             return redirect($request->url)->with('messages', $response['messages']);
         } else {
             $categories = []; $genres = [];
-            $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+            $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
             try { $categories = $getCategories['categories']; } catch(Throwable) { }
-            $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+            $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
             try { $genres = $getGenres['genres']; } catch(Throwable){ }
             return view('control.book', ['bookErrors' => $response['errors'], 'profile' => $profile, 'auth' => true, 'cr' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'url' => $request->url, 'ab' => true]);
         }
     }
 
     public function bookEdit(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $categories = []; $genres = []; $genre = []; $category = []; $url = back()->getTargetUrl();
 
-        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+        $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
-        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+        $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
         try { $genres = $getGenres['genres']; } catch(Throwable){ }
 
-        $getBook = Http::get('http://192.168.21.1:8021/api/Books/'.$request->id);
+        $getBook = Http::get(Method::$baseUrl.'Books/'.$request->id);
 
         foreach($getBook['book']['genres'] as $st){
             $genre[] = $st['id'];
@@ -174,15 +147,11 @@ class AdminController extends Controller
     }
 
     public function bookUpdate(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $data = [
             'title' => $request->title,
@@ -197,44 +166,37 @@ class AdminController extends Controller
         if($request->hasFile('image') && $request->hasFile('download')) {
             $response = Http::withToken(session('token'))->attach(
                 'image', file_get_contents($request->file('image')), $request->file('image')->getClientOriginalName()
-            )->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->put('http://192.168.21.1:8021/api/Books/'.$request->id, $data);
+            )->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->put(Method::$baseUrl.'Books/'.$request->id, $data);
         } elseif($request->hasFile('download')) {
-            $response = Http::withToken(session('token'))->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->put('http://192.168.21.1:8021/api/Books/'.$request->id, $data);
+            $response = Http::withToken(session('token'))->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->put(Method::$baseUrl.'Books/'.$request->id, $data);
         } elseif($request->hasFile('image')){
             $response = Http::withToken(session('token'))->attach(
                 'image', file_get_contents($request->file('image')), $request->file('image')->getClientOriginalName()
-            )->put('http://192.168.21.1:8021/api/Books/'.$request->id, $data);
+            )->put(Method::$baseUrl.'Books/'.$request->id, $data);
         } else {
-            $response = Http::withToken(session('token'))->asMultipart()->put('http://192.168.21.1:8021/api/Books/'.$request->id, $data);
+            $response = Http::withToken(session('token'))->asMultipart()->put(Method::$baseUrl.'Books/'.$request->id, $data);
         }
 
         if($response->successful()){
             return redirect($request->url)->with('messages', $response['messages']);
         } else {
             $categories = []; $genres = [];
-            $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+            $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
             try { $categories = $getCategories['categories']; } catch(Throwable) { }
-            $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+            $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
             try { $genres = $getGenres['genres']; } catch(Throwable){ }
             return view('control.book', ['bookErrors' => 'helo', 'profile' => $profile, 'auth' => true, 'ed' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'url' => $request->url, 'ab' => true]);
         }
     }
 
     public function bookDelete(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
-        $response = Http::withToken(session('token'))->delete('http://192.168.21.1:8021/api/Books/'.$request->id);
+        $response = Http::withToken(session('token'))->delete(Method::$baseUrl.'Books/'.$request->id);
 
         if($response->successful()){
             return back()->with('messages', $response['messages']);
@@ -245,18 +207,11 @@ class AdminController extends Controller
 
     // Admin User
     public function users(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $users = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 0; $url = $request->fullUrl(); $pick = $request['pc']; $gender = $request['g']; $role = $request['r'];
 
@@ -282,7 +237,7 @@ class AdminController extends Controller
             'Gender' => $gender
         ];
 
-        $getUsers = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Users', $data);
+        $getUsers = Http::withToken(session('token'))->get(Method::$baseUrl.'Users', $data);
 
         try { $total_page = $getUsers['totalPages']; } catch(Throwable) { }
         try { $users = $getUsers['users']; } catch(Throwable) { }
@@ -292,20 +247,13 @@ class AdminController extends Controller
     }
 
     public function userShow(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
-        $response = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Users/'.$request->id);
+        $response = Http::withToken(session('token'))->get(Method::$baseUrl.'Users/'.$request->id);
 
         if($response->successful()){
             return view('user', ['user' => $response['user'], 'auth' => true, 'profile' => $profile, 'au' => true]);
@@ -315,18 +263,11 @@ class AdminController extends Controller
     }
 
     public function userCreate(){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $url = back()->getTargetUrl();
 
@@ -338,18 +279,11 @@ class AdminController extends Controller
     }
 
     public function userStore(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $data = [
             'email' => $request->email,
@@ -366,9 +300,9 @@ class AdminController extends Controller
             $file_name = $request->file('image')->getClientOriginalName();
             $response = Http::withToken(session('token'))->attach(
                 'image', file_get_contents($request->file('image')), $file_name
-            )->post('http://192.168.21.1:8021/api/Users', $data);
+            )->post(Method::$baseUrl.'Users', $data);
         } else {
-            $response = Http::withToken(session('token'))->asMultipart()->post('http://192.168.21.1:8021/api/Users', $data);
+            $response = Http::withToken(session('token'))->asMultipart()->post(Method::$baseUrl.'Users', $data);
         }
 
         if($response->successful()){
@@ -382,22 +316,15 @@ class AdminController extends Controller
     }
 
     public function userEdit(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $user = null; $url = back()->getTargetUrl();
 
-        $response = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Users/'.$request->id);
+        $response = Http::withToken(session('token'))->get(Method::$baseUrl.'Users/'.$request->id);
 
         try { $user = $response['user']; } catch(Throwable) { }
 
@@ -409,18 +336,11 @@ class AdminController extends Controller
     }
 
     public function userUpdate(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $data = [
             'email' => $request->email,
@@ -437,16 +357,16 @@ class AdminController extends Controller
             $file_name = $request->file('image')->getClientOriginalName();
             $response = Http::withToken(session('token'))->attach(
                 'image', file_get_contents($request->file('image')), $file_name
-            )->put('http://192.168.21.1:8021/api/Users/'.$request->id, $data);
+            )->put(Method::$baseUrl.'Users/'.$request->id, $data);
         } else {
-            $response = Http::withToken(session('token'))->asMultipart()->put('http://192.168.21.1:8021/api/Users/'.$request->id, $data);
+            $response = Http::withToken(session('token'))->asMultipart()->put(Method::$baseUrl.'Users/'.$request->id, $data);
         }
 
         if($response->successful()){
             return redirect($request->url)->with('messages', $response['messages']);
         } else {
             $user = null;
-            $getUser = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Users/'.$request->id);
+            $getUser = Http::withToken(session('token'))->get(Method::$baseUrl.'Users/'.$request->id);
             try { $user = $getUser['user']; } catch(Throwable) { }
             $context = [
                 'au' => true, 'auth' => true, 'profile' => $profile, 'ed' => true, 'url' => $request->url, 'user' => $user, 'userErrors' => $response['errors']
@@ -456,20 +376,13 @@ class AdminController extends Controller
     }
 
     public function userDelete(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
-        $response = Http::withToken(session('token'))->delete('http://192.168.21.1:8021/api/Users/'.$request->id);
+        $response = Http::withToken(session('token'))->delete(Method::$baseUrl.'Users/'.$request->id);
 
         if($response->successful()){
             return back()->with('messages', $response['messages']);
@@ -480,18 +393,11 @@ class AdminController extends Controller
 
     // Admin Category
     public function categories(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $categories = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 0; $url = $request->fullUrl(); $pick = $request['pc'];
 
@@ -515,7 +421,7 @@ class AdminController extends Controller
             'Order' => $order,
         ];
 
-        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', $data);
+        $getCategories = Http::get(Method::$baseUrl.'Categories', $data);
 
         try { $total_page = $getCategories['totalPages']; } catch(Throwable) { }
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
@@ -525,20 +431,13 @@ class AdminController extends Controller
     }
 
     public function categoryStore(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
-        $response = Http::withToken(session('token'))->post('http://192.168.21.1:8021/api/Categories', ['Name' => $request->name]);
+        $response = Http::withToken(session('token'))->post(Method::$baseUrl.'Categories', ['Name' => $request->name]);
 
         if($response->successful()){
             return back()->with('messages', $response['messages']);
@@ -548,20 +447,13 @@ class AdminController extends Controller
     }
 
     public function categoryUpdate(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
-        $response = Http::withToken(session('token'))->put('http://192.168.21.1:8021/api/Categories/'.$request->id, ['Name' => $request->name]);
+        $response = Http::withToken(session('token'))->put(Method::$baseUrl.'Categories/'.$request->id, ['Name' => $request->name]);
 
         if($response->successful()){
             return back()->with('messages', $response['messages']);
@@ -571,20 +463,13 @@ class AdminController extends Controller
     }
 
     public function categoryDelete(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
-        $response = Http::withToken(session('token'))->delete('http://192.168.21.1:8021/api/Categories/'.$request->id);
+        $response = Http::withToken(session('token'))->delete(Method::$baseUrl.'Categories/'.$request->id);
 
         if($response->successful()){
             return back()->with('messages', $response['messages']);
@@ -595,18 +480,11 @@ class AdminController extends Controller
 
     // Admin Genre
     public function genres(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 0; $url = $request->fullUrl(); $pick = $request['pc'];
 
@@ -630,7 +508,7 @@ class AdminController extends Controller
             'Order' => $order,
         ];
 
-        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', $data);
+        $getGenres = Http::get(Method::$baseUrl.'Genres', $data);
 
         try { $total_page = $getGenres['totalPages']; } catch(Throwable) { }
         try { $genres = $getGenres['genres']; } catch(Throwable) { }
@@ -640,20 +518,13 @@ class AdminController extends Controller
     }
 
     public function genreStore(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
-        $response = Http::withToken(session('token'))->post('http://192.168.21.1:8021/api/Genres', ['Name' => $request->name]);
+        $response = Http::withToken(session('token'))->post(Method::$baseUrl.'Genres', ['Name' => $request->name]);
 
         if($response->successful()){
             return back()->with('messages', $response['messages']);
@@ -663,20 +534,13 @@ class AdminController extends Controller
     }
 
     public function genreUpdate(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
-        $response = Http::withToken(session('token'))->put('http://192.168.21.1:8021/api/Genres/'.$request->id, ['Name' => $request->name]);
+        $response = Http::withToken(session('token'))->put(Method::$baseUrl.'Genres/'.$request->id, ['Name' => $request->name]);
 
         if($response->successful()){
             return back()->with('messages', $response['messages']);
@@ -686,20 +550,13 @@ class AdminController extends Controller
     }
 
     public function genreDelete(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-            if ($profile['role'] != "Admin") {
-                return redirect()->route('home');
-            }
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
-        $response = Http::withToken(session('token'))->delete('http://192.168.21.1:8021/api/Genres/'.$request->id);
+        $response = Http::withToken(session('token'))->delete(Method::$baseUrl.'Genres/'.$request->id);
 
         if($response->successful()){
             return back()->with('messages', $response['messages']);

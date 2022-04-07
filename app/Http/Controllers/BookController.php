@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\Method;
 use Throwable;
 
 class BookController extends Controller
@@ -16,11 +17,8 @@ class BookController extends Controller
     public function index(Request $request)
     {
         $auth = false;
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if (Method::auth($profile)){
             $auth = true;
             $profile = $profile['user'];
         }
@@ -39,9 +37,9 @@ class BookController extends Controller
             $url = $url.'&';
         }
 
-        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+        $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
-        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+        $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
         try { $genres = $getGenres['genres']; } catch(Throwable){ }
 
         $data = [
@@ -58,7 +56,7 @@ class BookController extends Controller
         ];
 
         $getBooks = Http::asForm()->
-        post('http://192.168.21.1:8021/api/Books/GetBooks', $data);
+        post(Method::$baseUrl.'Books/GetBooks', $data);
         try { $total_page = $getBooks['totalPages']; } catch(Throwable) { }
         try { $books = $getBooks['books']; } catch(Throwable) { }
 
@@ -67,15 +65,11 @@ class BookController extends Controller
     }
 
     public function my(Request $request){
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if(!Method::auth($profile)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $books = []; $categories = []; $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 0; $url = $request->fullUrl(); $category = $request['c']; $genre = $request['g']; $pick = $request['pc'];
 
@@ -91,9 +85,9 @@ class BookController extends Controller
             $url = $url.'&';
         }
 
-        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+        $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
-        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+        $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
         try { $genres = $getGenres['genres']; } catch(Throwable){ }
 
         $data = [
@@ -111,7 +105,7 @@ class BookController extends Controller
         ];
 
         $getBooks = Http::asForm()->
-        post('http://192.168.21.1:8021/api/Books/GetBooks', $data);
+        post(Method::$baseUrl.'Books/GetBooks', $data);
         try { $total_page = $getBooks['totalPages']; } catch(Throwable) { }
         try { $books = $getBooks['books']; } catch(Throwable) { }
 
@@ -127,21 +121,17 @@ class BookController extends Controller
      */
     public function create()
     {
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if(!Method::auth($profile)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $categories = []; $genres = []; $url = back()->getTargetUrl();
 
-        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+        $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
-        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+        $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
         try { $genres = $getGenres['genres']; } catch(Throwable){ }
 
         $context = [
@@ -159,15 +149,11 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if(!Method::auth($profile)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $data = [
             'title' => $request->title,
@@ -182,18 +168,18 @@ class BookController extends Controller
         if($request->hasFile('image')) {
             $response = Http::withToken(session('token'))->attach(
                 'image', file_get_contents($request->file('image')), $request->file('image')->getClientOriginalName()
-            )->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->post('http://192.168.21.1:8021/api/Books', $data);
+            )->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->post(Method::$baseUrl.'Books', $data);
         } else {
-            $response = Http::withToken(session('token'))->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->post('http://192.168.21.1:8021/api/Books', $data);
+            $response = Http::withToken(session('token'))->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->post(Method::$baseUrl.'Books', $data);
         }
 
         if($response->successful()){
             return redirect($request->url)->with('messages', $response['messages']);
         } else {
             $categories = []; $genres = [];
-            $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+            $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
             try { $categories = $getCategories['categories']; } catch(Throwable) { }
-            $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+            $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
             try { $genres = $getGenres['genres']; } catch(Throwable){ }
             return view('control.book', ['bookErrors' => $response['errors'], 'profile' => $profile, 'auth' => true, 'cr' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'url' => $request->url, 'my' => true]);
         }
@@ -208,20 +194,17 @@ class BookController extends Controller
     public function show($id)
     {
         $auth = false; $favorite = false;
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $getFavorite = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles/Favorite/'.$id.'/false');
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if(Method::auth($profile)){
+            $getFavorite = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles/Favorite/'.$id.'/false');
             if($getFavorite->successful()){
                 $favorite = $getFavorite['favorite'];
             }
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
             $auth = true;
-            $profile = $profile['user'];
         }
+        $profile = $profile['user'];
 
-        $getBook = Http::get('http://192.168.21.1:8021/api/Books/'.$id);
+        $getBook = Http::get(Method::$baseUrl.'Books/'.$id);
 
         if($getBook->successful()){
             return view('book', ['book' => $getBook['book'], 'auth' => $auth, 'profile' => $profile, 'favorite' => $favorite]);
@@ -238,24 +221,20 @@ class BookController extends Controller
      */
     public function edit($id)
     {
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if(!Method::auth($profile)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $categories = []; $genres = []; $genre = []; $category = []; $url = back()->getTargetUrl();
 
-        $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+        $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
-        $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+        $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
         try { $genres = $getGenres['genres']; } catch(Throwable){ }
 
-        $getBook = Http::get('http://192.168.21.1:8021/api/Books/'.$id);
+        $getBook = Http::get(Method::$baseUrl.'Books/'.$id);
 
         foreach($getBook['book']['genres'] as $st){
             $genre[] = $st['id'];
@@ -279,15 +258,11 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if(!Method::auth($profile)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
         $data = [
             'title' => $request->title,
@@ -302,15 +277,15 @@ class BookController extends Controller
         if($request->hasFile('image') && $request->hasFile('download')) {
             $response = Http::withToken(session('token'))->attach(
                 'image', file_get_contents($request->file('image')), $request->file('image')->getClientOriginalName()
-            )->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->put('http://192.168.21.1:8021/api/Books/'.$id, $data);
+            )->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->put(Method::$baseUrl.'Books/'.$id, $data);
         } elseif($request->hasFile('download')) {
-            $response = Http::withToken(session('token'))->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->put('http://192.168.21.1:8021/api/Books/'.$id, $data);
+            $response = Http::withToken(session('token'))->attach('download', file_get_contents($request->file('download')), $request->file('download')->getClientOriginalName())->put(Method::$baseUrl.'Books/'.$id, $data);
         } elseif($request->hasFile('image')){
             $response = Http::withToken(session('token'))->attach(
                 'image', file_get_contents($request->file('image')), $request->file('image')->getClientOriginalName()
-            )->put('http://192.168.21.1:8021/api/Books/'.$id, $data);
+            )->put(Method::$baseUrl.'Books/'.$id, $data);
         } else {
-            $response = Http::withToken(session('token'))->asMultipart()->put('http://192.168.21.1:8021/api/Books/'.$id, $data);
+            $response = Http::withToken(session('token'))->asMultipart()->put(Method::$baseUrl.'Books/'.$id, $data);
         }
 
 
@@ -318,9 +293,9 @@ class BookController extends Controller
             return redirect($request->url)->with('messages', $response['messages']);
         } else {
             $categories = []; $genres = [];
-            $getCategories = Http::get('http://192.168.21.1:8021/api/Categories', [ "Sort" => "Name"]);
+            $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
             try { $categories = $getCategories['categories']; } catch(Throwable) { }
-            $getGenres = Http::get('http://192.168.21.1:8021/api/Genres', [ "Sort" => "Name"]);
+            $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
             try { $genres = $getGenres['genres']; } catch(Throwable){ }
             return view('control.book', ['bookErrors' => 'helo', 'profile' => $profile, 'auth' => true, 'ed' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'url' => $request->url, 'my' => true]);
         }
@@ -334,17 +309,13 @@ class BookController extends Controller
      */
     public function destroy(Request $request)
     {
-        $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
-
-        if ($profile->successful()){
-            $refreshToken = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Auth/RefreshToken');
-            session(['token' => $refreshToken['token']]);
-            $profile = $profile['user'];
-        } else {
+        $profile = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles');
+        if(!Method::auth($profile)){
             return redirect()->route('home');
         }
+        $profile = $profile['user'];
 
-        $response = Http::withToken(session('token'))->delete('http://192.168.21.1:8021/api/Books/'.$request->id);
+        $response = Http::withToken(session('token'))->delete(Method::$baseUrl.'Books/'.$request->id);
 
         if($response->successful()){
             return back()->with('messages', $response['messages']);
@@ -354,9 +325,9 @@ class BookController extends Controller
     }
 
     public function download(Request $request){
-        $response = Http::get('http://192.168.21.1:8021/api/Books/DownloadBook/'.$request->download);
+        $response = Http::get(Method::$baseUrl.'Books/DownloadBook/'.$request->download);
 
-        $url = 'http://192.168.21.1:8021/api/Books/DownloadBook/'.$request->download;
+        $url = Method::$baseUrl.'Books/DownloadBook/'.$request->download;
 
         if($response->successful()){
             return redirect($url);
