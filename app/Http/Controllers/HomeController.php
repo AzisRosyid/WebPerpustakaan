@@ -29,6 +29,7 @@ class HomeController extends Controller
     }
 
     public function register(){
+
         $profile = Http::withToken(session('token'))->get('http://192.168.21.1:8021/api/Profiles');
 
         if ($profile->successful()){
