@@ -7,11 +7,16 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    @if($profile['role']??'' == 'Admin')
+    @if($auth??false)
+    @if($profile['role'] === 'Admin')
     <title>Perpustakaan Admin</title>
+    @else
+    <title>Perpustakaan User</title>
+    @endif
     @else
     <title>Perpustakaan</title>
     @endif
+
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
@@ -31,8 +36,12 @@
                 <button class="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#controlPanel" aria-controls="Control Panel">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @if($profile['role']??'' == 'Admin')
+                @if($auth??false)
+                @if($profile['role'] === 'Admin')
                 <a class="navbar-brand fs-4 ps-3 align-middle" href="{{ route('home') }}">Perpustakaan Admin</a>
+                @else
+                <a class="navbar-brand fs-4 ps-3 align-middle" href="{{ route('home') }}">Perpustakaan User</a>
+                @endif
                 @else
                 <a class="navbar-brand fs-4 ps-3 align-middle" href="{{ route('home') }}">Perpustakaan</a>
                 @endif
@@ -117,7 +126,7 @@
                     My Books
                 </div>
             </a>
-            @if($profile['role'] == 'Admin')
+            @if($profile['role'] === 'Admin')
             <div style="border-top: 1px solid silver; margin-top: 8px;">
                 {{-- <p style="padding-top: 12px; font-size: 17px; color: silver; font-weight: bold;">Admin Control</p> --}}
             </div>
@@ -169,7 +178,7 @@
       </div>
 
       <!-- Modal -->
-@if(!$auth??false)
+@if(!($auth??false))
 <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="Login">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">

@@ -64,7 +64,7 @@ class AuthController extends Controller
         if($response->successful()){
             return redirect()->route('home')->with('messages', $response['messages']);
         } else {
-            return view('register', ['request' => $request])->with('registerErrors', $response['errors']);
+            return view('register', ['request' => $request, 'registerErrors' => $response['errors']]);
         }
     }
 
