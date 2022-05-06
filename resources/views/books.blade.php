@@ -174,7 +174,7 @@
 
 @if (!empty($books))
 
-<div class="row row-cols-auto align-items-center">
+<div class="row row-cols-auto">
     @foreach ($books as $st)
     <div class="">
         <a @if($fav??false) href="{{ route('getFavorite', ['id' => $st['id']]) }}" @else href="{{ route('getBook', ['id' => $st['id']]) }}" @endif class="text-decoration-none text-black">

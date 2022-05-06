@@ -60,7 +60,7 @@ class BookController extends Controller
         try { $total_page = $getBooks['totalPages']; } catch(Throwable) { }
         try { $books = $getBooks['books']; } catch(Throwable) { }
 
-        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'c' => $category, 'g' => $genre, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => $auth, 'profile' => $profile];
+        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'c' => $category, 'g' => $genre, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => $auth, 'profile' => $profile, 'f' => true];
         return view('books', $context);
     }
 
@@ -109,7 +109,7 @@ class BookController extends Controller
         try { $total_page = $getBooks['totalPages']; } catch(Throwable) { }
         try { $books = $getBooks['books']; } catch(Throwable) { }
 
-        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'c' => $category, 'g' => $genre, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => true, 'profile' => $profile, 'my' => true];
+        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'c' => $category, 'g' => $genre, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => true, 'profile' => $profile, 'my' => true, 'f' => true];
 
         return view('control.books', $context);
     }
@@ -201,8 +201,8 @@ class BookController extends Controller
                 $favorite = $getFavorite['favorite'];
             }
             $auth = true;
+            $profile = $profile['user'];
         }
-        $profile = $profile['user'];
 
         $getBook = Http::get(Method::$baseUrl.'Books/'.$id);
 

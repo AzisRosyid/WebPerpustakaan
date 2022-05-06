@@ -41,17 +41,14 @@
                 </form>
                 <div class="pt-1"></div>
                 @if($auth)
-                <form action="{{ route('favoriteBook') }}" method="POST">
-                    @csrf
-                    <input type="text" name="id" value="{{ $book['id'] }}" style="display: none;">
-                    <div class="d-grid gap-2">
-                        @if($favorite)
-                        <button href="{{ route('favorite', ['id' => $book['id']]) }}"  class="btn btn-danger mt-6" type="submit" value="Submit">Delete Favorite</button>
-                        @else
-                        <button href="{{ route('favorite', ['id' => $book['id']]) }}" class="btn btn-primary mt-6" type="submit" value="Submit">Favorite</button>
-                        @endif
-                    </div>
-                </form>
+                <input type="text" name="id" value="{{ $book['id'] }}" style="display: none;">
+                <div class="d-grid gap-2">
+                    @if($favorite)
+                    <button href="{{ route('favorite', ['id' => $book['id']]) }}" id="btnFavorite" class="btn btn-danger mt-6" type="submit" value="Submit">Delete Favorite</button>
+                    @else
+                    <button href="{{ route('favorite', ['id' => $book['id']]) }}" id="btnFavorite" class="btn btn-primary mt-6" type="submit" value="Submit">Favorite</button>
+                    @endif
+                </div>
                 @endif
             </div>
         </div>
@@ -74,4 +71,10 @@
       </div>
     </div>
   </div>
+
+  <script>
+      const favoriteUrl = `{{ route('favorite') }}`;
+      const favoriteBook = `{{ $book['id'] }}`;
+      const token = `{{ Session::token() }}`;
+  </script>
 @endsection

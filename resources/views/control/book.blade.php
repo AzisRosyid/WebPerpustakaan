@@ -37,11 +37,10 @@
                         <div class="m-2">
                             <div class="input-group">
                                 <button class="btn btn-dark text-white" id="btn-user" type="button" data-bs-toggle="modal" data-bs-target="#userModal">Select User</button>
-                                <input type="text" style="display: none;" id="user" name="user" readonly>
-                                <label class="card card-body user-select" id="user-label" for="btn-user">Click to Select User</label>
+                                <input type="text" style="display: none;" id="userId" name="userId" value="{{ $book['userId']??$book['user']['id']??'' }}" readonly>
+                                <label class="card card-body user-select" id="user-label" for="btn-user">{{ $book['user']['name']??'Click to Select User' }}</label>
                             </div>
                         </div>
-
                         @endif
                         <div class="form-floating m-2">
                             <input type="text" name="publisher" class="form-control bg-white" id="publisher" placeholder="Publisher" value="{{ $book['publisher']??'' }}">
@@ -130,11 +129,29 @@
     </div>
 </div>
 
-<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-      <div class="modal-content">
-
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModal" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen">
+      <div class="modal-content" style="background: transparent; overflow: auto;">
+        <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+            <div class="container-fluid">
+                <div>
+                    <span class="navbar-brand fs-4 ps-2 align-middle">Select User</span>
+                </div>
+                <input class="form-control search-modal input-search me-2" type="search" placeholder="Search User..." aria-label="Search" name="s" id="searchUserModal">
+                {{-- <form class="d-flex navbar-form navbar-center me-auto">
+                    <input class="form-control input-search me-2" type="search" aria-label="Search" name="s" autofocus>
+                    <button class="btn btn-outline-light" type="submit">Search</button>
+                  </form> --}}
+              <button type="button" id="closeUserModal" class="btn-modal-close btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </nav>
+        <div id="userModalContent"></div>
       </div>
     </div>
 </div>
+
+<script>
+    const usersUrl = "{{ route('adminUsers') }}";
+    const userUrl = "{{ route('adminShowUser', ['']) }}";
+</script>
 @endsection

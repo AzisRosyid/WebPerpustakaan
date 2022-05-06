@@ -23,7 +23,7 @@ class HomeController extends Controller
             $profile = $profile['user'];
         }
 
-        return view('home', ['profile' => $profile, 'auth' => $auth]);
+        return view('home', ['profile' => $profile, 'auth' => $auth, 'f' => true]);
     }
 
     public function register(){

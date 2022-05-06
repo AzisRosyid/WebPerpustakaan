@@ -24,9 +24,9 @@ class ProfileController extends Controller
             return redirect()->route('home');
         }
 
-        Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles/Favorite/'.$request->id.'/true');
+        $response = Http::withToken(session('token'))->get(Method::$baseUrl.'Profiles/Favorite/'.$request->id.'/true');
 
-        return back();
+        return response($response['favorite']);
     }
 
     public function book(Request $request){
@@ -78,7 +78,7 @@ class ProfileController extends Controller
         try { $total_page = $getBooks['totalPages']; } catch(Throwable) { }
         try { $books = $getBooks['books']; } catch(Throwable) { }
 
-        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'c' => $category, 'g' => $genre, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => $auth, 'profile' => $profile, 'fav' => true];
+        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'c' => $category, 'g' => $genre, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => $auth, 'profile' => $profile, 'fav' => true, 'f' => true];
         return view('books', $context);
     }
 

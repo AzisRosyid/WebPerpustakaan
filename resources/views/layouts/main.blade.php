@@ -53,7 +53,7 @@
               </button>
             <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
           <form class="d-flex navbar-form navbar-center me-auto" type="get" @if($fav??false) action="{{ route('favorite') }}" @elseif($my??false) accept="{{ route('myBooks') }}" @elseif($ag??false) accept="{{ route('adminGenres') }}" @elseif($ac??false) accept="{{ route('adminCategories') }}" @elseif($au??false) accept="{{ route('adminUsers') }}" @elseif($ab??false) accept="{{ route('adminBooks') }}" @else action="{{ route('books') }}" @endif>
-            <input class="form-control input-search me-2" type="search" @if($fav??false) placeholder="Search Favorite..." @elseif($my??false) placeholder="Search My Books..." @elseif($ag??false) placeholder="Search Admin Genres..." @elseif($ac??false) placeholder="Search Admin Categories..." @elseif($au??false) placeholder="Search Admin Users..." @elseif($ab??false) placeholder="Search Admin Books..." @else placeholder="Search Books..." @endif aria-label="Search" name="s" value="{{ $s ?? '' }}" autofocus>
+            <input class="form-control input-search me-2" type="search" @if($fav??false) placeholder="Search Favorite..." @elseif($my??false) placeholder="Search My Books..." @elseif($ag??false) placeholder="Search Admin Genres..." @elseif($ac??false) placeholder="Search Admin Categories..." @elseif($au??false) placeholder="Search Admin Users..." @elseif($ab??false) placeholder="Search Admin Books..." @else placeholder="Search Books..." @endif aria-label="Search" name="s" value="{{ $s ?? '' }}" @if($f??false) autofocus @endif>
             <button class="btn btn-outline-light" type="submit">Search</button>
           </form>
           @if($my??false)
@@ -80,6 +80,7 @@
         </div>
         </div>
       </nav>
+
     <main class="py-4">
         <div class="container">
             @yield('content')
@@ -340,21 +341,21 @@
 
   <script src="{{ asset('js/jquery.js') }}" type="text/javascript"></script>
   <script>
-    const errors = "<?php echo Session::get('loginErrors')??'' ?>";
-    const messages = "<?php echo Session::get('messages')??'' ?>";
+    const errors = "{{ Session::get('loginErrors')??'' }}";
+    const messages = "{{ Session::get('messages')??'' }}";
     const books = []; const users = [];
   </script>
   <script src="{{ asset('js/script.js') }}"></script>
 
   @foreach ($books??[] as $st)
   <script>
-    books.push("<?php echo $st['id'] ?>");
+    books.push("{{ $st['id'] }}");
   </script>
   @endforeach
 
   @foreach ($users??[] as $st)
   <script>
-    users.push("<?php echo $st['id'] ?>");
+    users.push("{{ $st['id'] }}");
   </script>
   @endforeach
 
