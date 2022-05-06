@@ -19,7 +19,8 @@
                         <div class="col-md-4">
                             <div id="v-pills-tab" role="tablist" class="list-group">
                                 <button class="list-group-item active" id="list-books-tab" data-bs-toggle="pill" data-bs-target="#list-books" type="button" role="tab" aria-controls="list books" aria-selected="true">List Books</button>
-                                <button class="list-group-item" id="category-tab" data-bs-toggle="pill" data-bs-target="#categories" type="button" role="tab" aria-controls="categories" aria-selected="true">Categories</button>
+                                <button class="list-group-item" id="user-tab" data-bs-toggle="pill" data-bs-target="#user" type="button" role="tab" aria-controls="user" aria-selected="false">User</button>
+                                <button class="list-group-item" id="category-tab" data-bs-toggle="pill" data-bs-target="#category" type="button" role="tab" aria-controls="category" aria-selected="false">Category</button>
                                 <button class="list-group-item" id="genres-tab" data-bs-toggle="pill" data-bs-target="#genres" type="button" role="tab" aria-controls="genres" aria-selected="false">Genres</button>
                                 <button class="list-group-item" id="sort-by-tab" data-bs-toggle="pill" data-bs-target="#sort-by" type="button" role="tab" aria-controls="sort-by" aria-selected="false">Sort By</button>
                                 <button class="list-group-item" id="order-by-tab" data-bs-toggle="pill" data-bs-target="#order-by" type="button" role="tab" aria-controls="order-by" aria-selected="false">Order By</button>
@@ -33,7 +34,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="tab-content" id="v-pills-tabContent">
-                                <div class="card card-body" style="height: 315px;">
+                                <div class="card card-body" style="height: 355px;">
                                     <div class="tab-pane fade show active" id="list-books" role="tabpanel" aria-labelledby="list-books-tab">
                                         <div class="row row-cols-auto overflow-auto">
                                             <div class="col-12">
@@ -64,7 +65,19 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="categories" role="tabpanel" aria-labelledby="category-tab">
+                                    <div class="tab-pane fade" id="user" role="tabpanel" aria-labelledby="user-tab">
+                                        <div class="row overflow-auto">
+                                            <div class="m-1 col">
+                                                <div class="input-group">
+                                                    <button class="btn btn-primary text-white" id="btn-user" type="button" data-bs-toggle="modal" data-bs-target="#userModal">Select User</button>
+                                                    <input type="text" style="display: none;" id="userId" name="ui" value="{{ $ui??'' }}" readonly>
+                                                    <input type="text" style="display: none;" name="u" id="userName" value="{{ $u??'Click to Select User' }}" readonly>
+                                                    <label class="card card-body user-select-search" id="userLabel" for="btn-user">{{ $u??'Click to Select User' }}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="category" role="tabpanel" aria-labelledby="category-tab">
                                         <div class="row row-cols-auto overflow-auto">
                                                 @foreach ($categories as $st)
                                                 <div class="col m-1">
@@ -302,5 +315,29 @@
     </div>
 </div>
 @endif
+
+{{-- Modal --}}
+<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModal" data-bs-backdrop="static" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-fullscreen">
+      <div class="modal-content" style="background: transparent; overflow: auto;">
+        <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+            <div class="container-fluid">
+                <div>
+                    <span class="navbar-brand fs-4 ps-2 align-middle">Select User</span>
+                </div>
+                <input class="form-control search-modal input-search me-2" type="search" placeholder="Search User..." aria-label="Search" name="s" id="searchUserModal">
+              <button type="button" id="closeUserModal" class="btn-modal-close btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        </nav>
+        <div id="userModalContent"></div>
+      </div>
+    </div>
+</div>
+
+<script>
+    const usersUrl = "{{ route('adminUsers') }}";
+    const userUrl = "{{ route('adminShowUser', ['']) }}";
+    const defaultImg = "{{ asset('img/nopick.png') }}";
+</script>
 
 @endsection

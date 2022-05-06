@@ -38,7 +38,8 @@
                             <div class="input-group">
                                 <button class="btn btn-dark text-white" id="btn-user" type="button" data-bs-toggle="modal" data-bs-target="#userModal">Select User</button>
                                 <input type="text" style="display: none;" id="userId" name="userId" value="{{ $book['userId']??$book['user']['id']??'' }}" readonly>
-                                <label class="card card-body user-select" id="user-label" for="btn-user">{{ $book['user']['name']??'Click to Select User' }}</label>
+                                <input type="text" style="display: none;" name="userName" id="userName" value="{{ $book['user']['name']??$book['userName']??'Click to Select User' }}" readonly>
+                                <label class="card card-body user-select" id="userLabel" for="btn-user">{{ $book['user']['name']??$book['userName']??'Click to Select User' }}</label>
                             </div>
                         </div>
                         @endif
@@ -54,7 +55,7 @@
                             <select class="form-select bg-white" name="category" id="category" aria-label="Select Category">
                               <option value="">--</option>
                               @foreach ($c as $st)
-                              <option value="{{ $st['id'] }}" @if ( in_array($st['id'], $category??[])) selected @endif>{{ $st['name'] }}</option>
+                              <option value="{{ $st['id'] }}" @if(isset($category) && $st['id'] == $category??'') selected @endif>{{ $st['name'] }}</option>
                               @endforeach
                             </select>
                             <label for="category">Category</label>
@@ -110,7 +111,7 @@
                         <div class="text-center img-profile">
                             <label class="form-label" for="imgProfile">Image Book</label>
                             <a data-bs-toggle="modal" data-bs-target="#imageModal">
-                                <img @if($cr??false) src="{{ asset('img/nopick.png') }}" @elseif($ed??false) src="http://192.168.21.1:8021/api/Books/ImageBook/{{ $book['image'] }}" @endif class="rounded" width="100%"  id="imgProfile" alt="Profile Image">
+                                <img @if($book['image']??null != null) src="http://192.168.21.1:8021/api/Books/ImageBook/{{ $book['image'] }}" @else src="{{ asset('img/nopick.png') }}"  @endif class="rounded" width="100%"  id="imgProfile" alt="Profile Image">
                             </a>
                         </div>
                     </div>
@@ -124,7 +125,7 @@
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content overflow-auto">
-        <img @if($cr??false) src="{{ asset('img/nopick.png') }}" @elseif($ed??false) src="http://192.168.21.1:8021/api/Books/ImageBook/{{ $book['image'] }}" @endif  class="rounded" id="imgProfileModal" alt="Image Profile">
+        <img @if($book['image']??null != null) src="http://192.168.21.1:8021/api/Books/ImageBook/{{ $book['image'] }}" @else src="{{ asset('img/nopick.png') }}" @endif  class="rounded" id="imgProfileModal" alt="Image Profile">
       </div>
     </div>
 </div>
@@ -153,5 +154,6 @@
 <script>
     const usersUrl = "{{ route('adminUsers') }}";
     const userUrl = "{{ route('adminShowUser', ['']) }}";
+    const defaultImg = "{{ asset('img/nopick.png') }}";
 </script>
 @endsection

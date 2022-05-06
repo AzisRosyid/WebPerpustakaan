@@ -17,7 +17,7 @@ class AdminController extends Controller
         }
         $profile = $profile['user'];
 
-        $books = []; $categories = []; $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 0; $url = $request->fullUrl(); $category = $request['c']; $genre = $request['g']; $pick = $request['pc']; $user = $request['u'];
+        $books = []; $categories = []; $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 1; $url = $request->fullUrl(); $category = $request['c']; $genre = $request['g']; $pick = $request['pc']; $user = $request['u']; $userId = $request['ui'];
 
         if($page == '') { $page = 1; }
         if($pick == '') { $pick = 10; }
@@ -40,7 +40,7 @@ class AdminController extends Controller
             'Search' => $search,
             'Page' => $page,
             'Genres' => $genre,
-            'User' => $user,
+            'User' => $userId,
             'Category' => $category,
             'Pick' => $pick,
             'Sort' => $sort,
@@ -55,7 +55,7 @@ class AdminController extends Controller
         try { $total_page = $getBooks['totalPages']; } catch(Throwable) { }
         try { $books = $getBooks['books']; } catch(Throwable) { }
 
-        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'c' => $category, 'g' => $genre, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => true, 'profile' => $profile, 'ab' => true, 'f' => true];
+        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'u' => $user, 'ui' => $userId, 'c' => $category, 'g' => $genre, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => true, 'profile' => $profile, 'ab' => true, 'f' => true];
 
         return view('control.books', $context);
     }
@@ -115,7 +115,7 @@ class AdminController extends Controller
             try { $categories = $getCategories['categories']; } catch(Throwable) { }
             $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
             try { $genres = $getGenres['genres']; } catch(Throwable){ }
-            return view('control.book', ['bookErrors' => $response['errors'], 'profile' => $profile, 'auth' => true, 'cr' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'url' => $request->url, 'ab' => true]);
+            return view('control.book', ['bookErrors' => $response['errors'], 'profile' => $profile, 'auth' => true, 'cr' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'category' => $request->category, 'url' => $request->url, 'ab' => true]);
         }
     }
 
@@ -153,6 +153,7 @@ class AdminController extends Controller
         if (!Method::auth($profile, true)){
             return redirect()->route('home');
         }
+
         $profile = $profile['user'];
 
         $data = [
@@ -188,7 +189,7 @@ class AdminController extends Controller
             try { $categories = $getCategories['categories']; } catch(Throwable) { }
             $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
             try { $genres = $getGenres['genres']; } catch(Throwable){ }
-            return view('control.book', ['bookErrors' => $response['errors'], 'profile' => $profile, 'auth' => true, 'ed' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'url' => $request->url, 'ab' => true]);
+            return view('control.book', ['bookErrors' => $response['errors'], 'profile' => $profile, 'auth' => true, 'ed' => true, 'book' => $request, 'c' => $categories, 'g' => $genres, 'genre' => $request->genre, 'category' => $request->category, 'url' => $request->url, 'ab' => true]);
         }
     }
 
@@ -216,7 +217,7 @@ class AdminController extends Controller
         }
         $profile = $profile['user'];
 
-        $users = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 0; $url = $request->fullUrl(); $pick = $request['pc']; $gender = $request['g']; $role = $request['r'];
+        $users = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 1; $url = $request->fullUrl(); $pick = $request['pc']; $gender = $request['g']; $role = $request['r'];
 
         if($page == '') { $page = 1; }
         if($pick == '') { $pick = 10; }
@@ -406,7 +407,7 @@ class AdminController extends Controller
         }
         $profile = $profile['user'];
 
-        $categories = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 0; $url = $request->fullUrl(); $pick = $request['pc'];
+        $categories = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 1; $url = $request->fullUrl(); $pick = $request['pc'];
 
         if($page == '') { $page = 1; }
         if($pick == '') { $pick = 10; }
@@ -493,7 +494,7 @@ class AdminController extends Controller
         }
         $profile = $profile['user'];
 
-        $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 0; $url = $request->fullUrl(); $pick = $request['pc'];
+        $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 1; $url = $request->fullUrl(); $pick = $request['pc'];
 
         if($page == '') { $page = 1; }
         if($pick == '') { $pick = 10; }

@@ -33,8 +33,13 @@ window.onresize = () => {
 }
 
 $('#image').change(function(event) {
-	$('#imgProfile').attr('src', URL.createObjectURL(event.target.files[0]));
-    $('#imgProfileModal').attr('src', URL.createObjectURL(event.target.files[0]));
+    if(event.target.files.length > 0){
+        $('#imgProfile').attr('src', URL.createObjectURL(event.target.files[0]));
+        $('#imgProfileModal').attr('src', URL.createObjectURL(event.target.files[0]));
+    } else {
+        $('#imgProfile').attr('src', defaultImg);
+        $('#imgProfileModal').attr('src', defaultImg);
+    }
 });
 
 $('#btnFavorite').click(function(){
@@ -131,7 +136,8 @@ function getUser(){
             data.users.forEach(function(st){
                 $(`#selectUserModal${st.id}`).click(function() {
                     $('#userId').attr('value', st.id);
-                    $('#user-label').text(st.name);
+                    $('#userName').attr('value', st.name);
+                    $('#userLabel').text(st.name);
                 });
             });
         }

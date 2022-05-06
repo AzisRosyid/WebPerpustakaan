@@ -89,7 +89,7 @@
                         <div class="text-center img-profile">
                             <label class="form-label" for="imgProfile">Image Profile</label>
                             <a data-bs-toggle="modal" data-bs-target="#imageModal">
-                                <img @if($cr??false) src="{{ asset('img/nopick.png') }}" @elseif($ed??false) src="http://192.168.21.1:8021/api/Users/UserImage/{{ $user['image'] }}" @endif class="rounded" width="100%"  id="imgProfile" alt="Profile Image">
+                                <img @if($user['image']??null != null) src="http://192.168.21.1:8021/api/Users/UserImage/{{ $user['image'] }}" @else src="{{ asset('img/nopick.png') }}"  @endif class="rounded" width="100%"  id="imgProfile" alt="Profile Image">
                             </a>
                         </div>
                     </div>
@@ -103,7 +103,7 @@
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content overflow-auto">
-        <img @if($cr??false) src="{{ asset('img/nopick.png') }}" @elseif($ed??false) src="http://192.168.21.1:8021/api/Users/UserImage/{{ $user['image'] }}" @endif class="rounded" width="100%"  id="imgProfileModal" alt="Image Profile">
+        <img @if($user['image']??null != null) src="http://192.168.21.1:8021/api/Users/UserImage/{{ $user['image'] }}" @else src="{{ asset('img/nopick.png') }}" @endif class="rounded" width="100%"  id="imgProfileModal" alt="Image Profile">
       </div>
     </div>
 </div>

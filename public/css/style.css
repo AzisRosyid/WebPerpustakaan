@@ -98,6 +98,14 @@
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
 }
 
+.user-select-search {
+    border: 1px solid #0d6efd;
+}
+
+.user-select-search:hover {
+    box-shadow: 0 0 0 1px rgba(144, 144, 244, 0.3);
+}
+
 .text-hidden {
     overflow: hidden;
     width: 100%;
