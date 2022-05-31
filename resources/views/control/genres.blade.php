@@ -129,7 +129,7 @@
     <div class="row ps-3 g-0">
       <div class="col-md-2 align-self-center">
           <div class="row">
-            <p class="align-middle" style="position: relative; bottom: -8px; padding-left: 20px; font-size: 18px;">{{ $loop->index + 1 }}.</p>
+            <p class="align-middle" style="position: relative; bottom: -8px; padding-left: 20px; font-size: 18px;">{{ $loop->index + 1 + (($p - 1) * $pc) }}.</p>
           </div>
       </div>
       <div class="col-md-6 align-self-center" >

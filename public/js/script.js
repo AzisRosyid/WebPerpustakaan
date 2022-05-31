@@ -82,15 +82,18 @@ $('#closeUserModal').click(function(){
 
 function getUser(){
     const value = $('#searchUserModal').val();
-    const p = userPage;
-    $.get(`${usersUrl}?modal=true&s=${value}&p=${p}`, function(data){
+    const p = userPage; const pc = 8;
+    $.get(`${usersUrl}?modal=true&s=${value}&p=${p}&pc=${pc}`, function(data){
         var data = JSON.parse(data);
         let content = '<main class="py-4"><div class="container">';
         const btnPage = [];
         if(Array.isArray(data.users)){
             content += `<div class="mt-1"></div>`;
             data.users.forEach(function(st, i) {
-                content += `<div class="card mt-2" ><div class="row ps-3 g-0"> <div class="col-md-2 align-self-center"><div class="row"><p class="align-middle" style="position: relative; bottom: -8px; padding-left: 20px; font-size: 18px;">${i + 1}.</p></div></div><div class="col-md-6 align-self-center" ><div class="row row-cols-auto"><p class="align-middle align-self-center col overflow-auto" style="position: relative; margin-left: 10px; bottom: -8px;font-size: 18px; width: 60%;" >${st.name}</p><p class="align-middle align-self-center col" style="position: relative; margin-left: 10px; bottom: -8px; font-size: 18px; width: 30%" >Level : ${st.role}</p></div></div><div class="col-md-2 align-self-center"><div class="d-grid gap-2 m-2"><a class="btn btn-primary text-white" href="${userUrl}/${st.id}" target="_blank" aria-controls="Show User Modal">Show</a></div></div><div class="col-md-2 align-self-center pe-2"><div class="d-grid gap-2 m-2"><button class="btn btn-success" id="selectUserModal${st.id}" aria-controls="Select User Modal" data-bs-dismiss="modal">Select</button></div></div></div></div>`;
+                num = 0;
+                if(p == 1) num = i + 1;
+                else num = i + 1 + ((p - 1) * pc);
+                content += `<div class="card mt-2" ><div class="row ps-3 g-0"> <div class="col-md-2 align-self-center"><div class="row"><p class="align-middle" style="position: relative; bottom: -8px; padding-left: 20px; font-size: 18px;">${num}.</p></div></div><div class="col-md-6 align-self-center" ><div class="row row-cols-auto"><p class="align-middle align-self-center col overflow-auto" style="position: relative; margin-left: 10px; bottom: -8px;font-size: 18px; width: 60%;" >${st.name}</p><p class="align-middle align-self-center col" style="position: relative; margin-left: 10px; bottom: -8px; font-size: 18px; width: 30%" >Level : ${st.role}</p></div></div><div class="col-md-2 align-self-center"><div class="d-grid gap-2 m-2"><a class="btn btn-primary text-white" href="${userUrl}/${st.id}" target="_blank" aria-controls="Show User Modal">Show</a></div></div><div class="col-md-2 align-self-center pe-2"><div class="d-grid gap-2 m-2"><button class="btn btn-success" id="selectUserModal${st.id}" aria-controls="Select User Modal" data-bs-dismiss="modal">Select</button></div></div></div></div>`;
             });
             const tp = data.totalPages;
             content += `<div class="card mt-3"><div class="card-body"><nav aria-label="Page navigation example"><ul class="pagination justify-content-end">

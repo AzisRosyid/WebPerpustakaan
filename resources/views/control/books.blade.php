@@ -120,6 +120,21 @@
                                                     <option value="Favorite" @if ($sb === "Favorite")
                                                     selected
                                                     @endif>Favorite</option>
+                                                    <option value="Id" @if ($sb === "Id")
+                                                    selected
+                                                    @endif>Id</option>
+                                                    <option value="Title" @if ($sb === "Title")
+                                                    selected
+                                                    @endif>Title</option>
+                                                    <option value="Author" @if ($sb === "Author")
+                                                    selected
+                                                    @endif>Author</option>
+                                                    <option value="Publisher" @if ($sb === "Publisher")
+                                                    selected
+                                                    @endif>Publisher</option>
+                                                    <option value="TotalPage" @if ($sb === "TotalPage")
+                                                    selected
+                                                    @endif>Total Page</option>
                                                     <option value="DateUpdated" @if ($sb === "DateUpdated")
                                                     selected
                                                     @endif>Date Updated</option>
