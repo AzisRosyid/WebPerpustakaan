@@ -150,10 +150,10 @@
                                                     </div>
                                                 </div>
                                                 <div class="input-group mb-3 m-1">
-                                                    <input type="date" id="start" name="start"  class="form-control bg-white" placeholder="Date Start" aria-label="Date Start">
+                                                    <input type="date" id="start" name="start"  class="form-control bg-white" placeholder="Date Start" aria-label="Date Start" value="{{ $start }}">
                                                     <span class="input-group-text">-</span>
                                                     <input type="date"
-                                                    id="end" name="end" class="form-control bg-white" placeholder="Date End" aria-label="Date End">
+                                                    id="end" name="end" class="form-control bg-white" placeholder="Date End" aria-label="Date End" value="{{ $end }}">
                                                 </div>
                                             </div>
                                         </div>
