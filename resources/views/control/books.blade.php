@@ -231,7 +231,7 @@
                     <a class="btn btn-success ms-2" @if($fav??false) href="{{ route('favorite') }}?c={{ $st['category']['id'] }}" @else href="{{ route('myBooks') }}?c={{ $st['category']['id'] }}" @endif>{{ $st['category']['name'] }} </a>
                 @endif </p>
                 <div class="row">
-                    <div class="col-md-2 pt-1" style="font-size: 18px; width: 91px;">Genres :</div>
+                    <div class="col-md-2 pt-1" style="font-size: 18px; width: 93px;">Genres :</div>
                     <div class="col-md-10">
                         <div class="row row-cols-auto">
                         @foreach ($st['genres'] as $id)
