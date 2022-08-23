@@ -126,7 +126,7 @@ class AdminController extends Controller
         }
         $profile = $profile['user'];
 
-        $categories = []; $genres = []; $genre = []; $category = []; $url = back()->getTargetUrl();
+        $categories = []; $genres = []; $genre = []; $category = null; $url = back()->getTargetUrl();
 
         $getCategories = Http::get(Method::$baseUrl.'Categories', [ "Sort" => "Name"]);
         try { $categories = $getCategories['categories']; } catch(Throwable) { }
@@ -139,7 +139,7 @@ class AdminController extends Controller
             $genre[] = $st['id'];
         }
 
-        try { $category[] = $getBook['book']['category']['id']; } catch (Throwable){}
+        try { $category = $getBook['book']['category']['id']; } catch (Throwable){}
 
         $context = [
             'c' => $categories, 'g' => $genres, 'ed' => true, 'auth' => true, 'profile' => $profile, 'book' => $getBook['book'], 'genre' => $genre, 'category' => $category, 'ab' => true, 'url' => $url

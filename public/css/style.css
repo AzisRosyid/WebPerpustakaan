@@ -65,6 +65,26 @@
     }
 }
 
+.register-panel {
+    position: relative;
+    height: auto;
+    margin: 10px auto 0 auto;
+    display: table;
+}
+
+.img-profile {
+    bottom: 24px;
+    left: 0;
+}
+
+/* #imgProfile {
+    align-self: baseline;
+    align-content: flex-end;
+    margin-top: auto;
+    bottom: 0;
+    right: 0;
+} */
+
 .container {
     padding-top: 1rem;
 }
