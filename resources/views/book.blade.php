@@ -31,6 +31,9 @@
                 </div>
                 <p class="mt-2" style="font-size: 18px;">Pages : <span class="ms-1">{{ $book['page'] }}</span></p>
                 <p class="" style="font-size: 18px;">Views : <span class="ms-1">{{ $book['viewCount'] }}</span></p>
+                @if ($book['user']['id'] == $profile['id'])
+                <p class="" style="font-size: 18px;">Status : <span class="ms-1 btn @if ($book['status'] == "Draf") btn-warning @elseif ($book['status'] == 'Publish') btn-success @endif text-white">{{ $book['status'] }}</span></p>
+                @endif
                 <form action="{{ route('downloadBook') }}" method="POST" target="_blank">
                     @csrf
                     <div class="d-grid gap-2" style="padding-top: 20px;">

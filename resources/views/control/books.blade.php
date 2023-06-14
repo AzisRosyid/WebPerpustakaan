@@ -19,9 +19,12 @@
                         <div class="col-md-4">
                             <div id="v-pills-tab" role="tablist" class="list-group">
                                 <button class="list-group-item active" id="list-books-tab" data-bs-toggle="pill" data-bs-target="#list-books" type="button" role="tab" aria-controls="list books" aria-selected="true">List Books</button>
+                                @if($profile['role'] == 'Admin')
                                 <button class="list-group-item" id="user-tab" data-bs-toggle="pill" data-bs-target="#user" type="button" role="tab" aria-controls="user" aria-selected="false">User</button>
+                                @endif
                                 <button class="list-group-item" id="category-tab" data-bs-toggle="pill" data-bs-target="#category" type="button" role="tab" aria-controls="category" aria-selected="false">Category</button>
                                 <button class="list-group-item" id="genres-tab" data-bs-toggle="pill" data-bs-target="#genres" type="button" role="tab" aria-controls="genres" aria-selected="false">Genres</button>
+                                <button class="list-group-item" id="status-tab" data-bs-toggle="pill" data-bs-target="#status" type="button" role="tab" aria-controls="status" aria-selected="false">Status</button>
                                 <button class="list-group-item" id="sort-by-tab" data-bs-toggle="pill" data-bs-target="#sort-by" type="button" role="tab" aria-controls="sort-by" aria-selected="false">Sort By</button>
                                 <button class="list-group-item" id="order-by-tab" data-bs-toggle="pill" data-bs-target="#order-by" type="button" role="tab" aria-controls="order-by" aria-selected="false">Order By</button>
                                 <button class="list-group-item" id="date-tab" data-bs-toggle="pill" data-bs-target="#date" type="button" role="tab" aria-controls="date" aria-selected="false">Date</button>
@@ -34,7 +37,7 @@
                         </div>
                         <div class="col-md-8">
                             <div class="tab-content" id="v-pills-tabContent">
-                                <div class="card card-body" style="height: 355px;">
+                                <div class="card card-body" style="@if ($profile['role'] == 'Admin') height: 390px; @else height: 355px; @endif">
                                     <div class="tab-pane fade show active" id="list-books" role="tabpanel" aria-labelledby="list-books-tab">
                                         <div class="row row-cols-auto overflow-auto">
                                             <div class="col-12">
@@ -105,6 +108,24 @@
                                                     </div>
                                                 </div>
                                             @endforeach
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="status" role="tabpanel" aria-labelledby="order-by-tab">
+                                        <div class="row row-cols-auto overflow-auto">
+                                            <div class="col-12">
+                                                <div class="form-floating m-1">
+                                                    <select class="form-select bg-white" name="ss" id="floatingStatus" aria-label="Select Status">
+                                                        <option value="">--</option>
+                                                        <option value="Draf" @if ($ss === "Draf")
+                                                        selected
+                                                        @endif>Draf</option>
+                                                        <option value="Publish" @if ($ss === "Publish")
+                                                        selected
+                                                        @endif>Publish</option>
+                                                    </select>
+                                                    <label for="floatingStatus">Status</label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="sort-by" role="tabpanel" aria-labelledby="sort-by-tab">
@@ -242,6 +263,7 @@
                 </div>
                 <p class="mt-2" style="font-size: 18px;">Pages : <span class="ms-1">{{ $st['page'] }}</span></p>
                 <p class="" style="font-size: 18px;">Views : <span class="ms-1">{{ $st['viewCount'] }}</span></p>
+                <p class="" style="font-size: 18px;">Status : <span class="ms-1 btn @if ($st['status'] == "Draf") btn-warning @elseif ($st['status'] == 'Publish') btn-success @endif text-white">{{ $st['status'] }}</span></p>
                 <p class="" style="font-size: 18px;">Description : </p>
                 <p style="font-size: 16px; margin-top: -8px;">{{ $st['description'] }}</p>
                 <div class="row">

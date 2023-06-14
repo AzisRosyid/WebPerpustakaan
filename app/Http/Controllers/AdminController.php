@@ -17,7 +17,7 @@ class AdminController extends Controller
         }
         $profile = $profile['user'];
 
-        $books = []; $categories = []; $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 1; $url = $request->fullUrl(); $category = $request['c']; $genre = $request['g']; $pick = $request['pc']; $user = $request['u']; $userId = $request['ui'];
+        $books = []; $categories = []; $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 1; $url = $request->fullUrl(); $category = $request['c']; $genre = $request['g']; $pick = $request['pc']; $user = $request['u']; $userId = $request['ui']; $status = $request['ss'];
 
         if($page == '') { $page = 1; }
         if($pick == '') { $pick = 10; }
@@ -43,6 +43,7 @@ class AdminController extends Controller
             'User' => $userId,
             'Category' => $category,
             'Pick' => $pick,
+            'Status' => $status,
             'Sort' => $sort,
             'Content' => 'Full',
             'Order' => $order,
@@ -50,12 +51,11 @@ class AdminController extends Controller
             'End' => $request->end,
         ];
 
-        $getBooks = Http::asForm()->
-        post(Method::$baseUrl.'Books/GetBooks', $data);
+        $getBooks = Http::withToken(session('token'))->asForm()->post(Method::$baseUrl.'Books/GetBooks', $data);
         try { $total_page = $getBooks['totalPages']; } catch(Throwable) { }
         try { $books = $getBooks['books']; } catch(Throwable) { }
 
-        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'u' => $user, 'ui' => $userId, 'c' => $category, 'g' => $genre, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => true, 'profile' => $profile, 'start' => $request->start, 'end' => $request->end, 'ab' => true, 'f' => true];
+        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'u' => $user, 'ui' => $userId, 'c' => $category, 'g' => $genre, 'ss' => $status, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => true, 'profile' => $profile, 'start' => $request->start, 'end' => $request->end, 'ab' => true, 'f' => true];
 
         return view('control.books', $context);
     }
@@ -97,6 +97,7 @@ class AdminController extends Controller
             'category' => $request->category,
             'genreIds' => json_encode($request->genre),
             'description' => $request->description,
+            'status' => $request->status,
         ];
 
         if($request->hasFile('image')) {
@@ -133,7 +134,7 @@ class AdminController extends Controller
         $getGenres = Http::get(Method::$baseUrl.'Genres', [ "Sort" => "Name"]);
         try { $genres = $getGenres['genres']; } catch(Throwable){ }
 
-        $getBook = Http::get(Method::$baseUrl.'Books/'.$request->id);
+        $getBook = Http::withToken(session('token'))->get(Method::$baseUrl.'Books/'.$request->id);
 
         foreach($getBook['book']['genres'] as $st){
             $genre[] = $st['id'];
@@ -165,6 +166,7 @@ class AdminController extends Controller
             'category' => $request->category,
             'genreIds' => json_encode($request->genre),
             'description' => $request->description,
+            'status' => $request->status,
         ];
 
         if($request->hasFile('image') && $request->hasFile('download')) {

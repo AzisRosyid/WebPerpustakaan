@@ -114,8 +114,10 @@ class ProfileController extends Controller
         }
 
         $password = $request->password;
-        if($password == ''){
+        if($password == $request->passwordOld){
             $password = $request->passwordOld;
+        } else {
+            $password = null;
         }
 
         $data = [

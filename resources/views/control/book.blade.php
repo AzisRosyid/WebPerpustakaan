@@ -55,7 +55,7 @@
                             <select class="form-select bg-white" name="category" id="category" aria-label="Select Category">
                               <option value="" >--</option>
                               @foreach ($c as $st)
-                              <option value="{{ $st['id'] }}" @if($category === $st['id']) selected  @endif>{{ $st['name'] }}</option>
+                              <option value="{{ $st['id'] }}" @if(isset($category) && $category === $st['id']) selected  @endif>{{ $st['name'] }}</option>
                               @endforeach
                             </select>
                             <label for="category">Category</label>
@@ -89,6 +89,15 @@
                             <textarea class="form-control bg-white" placeholder="Description" name="description" id="description" style="height: 200px" required>{{ $book['description']??'' }}</textarea>
                             <label for="description">Description</label>
                         </div>
+                        @if ($profile['role'] === 'Admin')
+                        <div class="form-floating m-2">
+                            <select class="form-select bg-white" name="status" id="category" aria-label="Select Status">
+                              <option value="Draf" @if($book['status'] == "Draf") selected @endif>Draf</option>
+                              <option value="Publish" @if($book['status'] == "Publish") selected @endif>Publish</option>
+                            </select>
+                            <label for="status">Status</label>
+                        </div>
+                        @endif
                         <div class="m-2">
                             <label for="image" class="form-label">Upload Image Book</label>
                             <input class="form-control bg-white" type="file" name="image" accept="image/png, image/jpg, image/jpeg" id="image" placeholder="Select Image">

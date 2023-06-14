@@ -71,7 +71,7 @@ class BookController extends Controller
         }
         $profile = $profile['user'];
 
-        $books = []; $categories = []; $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 1; $url = $request->fullUrl(); $category = $request['c']; $genre = $request['g']; $pick = $request['pc'];
+        $books = []; $categories = []; $genres = []; $search = $request['s']; $sort = $request['sb']; $order = $request['ob']; $page = $request['p']; $total_page = 1; $url = $request->fullUrl(); $category = $request['c']; $genre = $request['g']; $pick = $request['pc']; $status = $request['ss'];
 
         if($page == '') { $page = 1; }
         if($pick == '') { $pick = 10; }
@@ -96,6 +96,7 @@ class BookController extends Controller
             'Genres' => $genre,
             'Category' => $category,
             'Pick' => $pick,
+            'Status' => $status,
             'Sort' => $sort,
             'Content' => 'Mid',
             'Order' => $order,
@@ -104,12 +105,11 @@ class BookController extends Controller
             'User' => $profile['id'],
         ];
 
-        $getBooks = Http::asForm()->
-        post(Method::$baseUrl.'Books/GetBooks', $data);
+        $getBooks = Http::withToken(session('token'))->asForm()->post(Method::$baseUrl.'Books/GetBooks', $data);
         try { $total_page = $getBooks['totalPages']; } catch(Throwable) { }
         try { $books = $getBooks['books']; } catch(Throwable) { }
 
-        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'c' => $category, 'g' => $genre, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => true, 'profile' => $profile, 'start' => $request->start, 'end' => $request->end, 'my' => true, 'f' => true];
+        $context = ['s' => $search, 'p' => $page, 'pc' => $pick, 'tp' => $total_page, 'c' => $category, 'g' => $genre, 'ss' => $status, 'sb' => $sort, 'ob' => $order, 'books' => $books, 'categories' => $categories, 'genres' => $genres, 'url' => $url, 'auth' => true, 'profile' => $profile, 'start' => $request->start, 'end' => $request->end, 'my' => true, 'f' => true];
 
         return view('control.books', $context);
     }
@@ -205,6 +205,9 @@ class BookController extends Controller
         }
 
         $getBook = Http::get(Method::$baseUrl.'Books/'.$id);
+        if ($auth) {
+            $getBook = Http::withToken(session('token'))->get(Method::$baseUrl.'Books/'.$id);
+        }
 
         if($getBook->successful()){
             return view('book', ['book' => $getBook['book'], 'auth' => $auth, 'profile' => $profile, 'favorite' => $favorite]);
